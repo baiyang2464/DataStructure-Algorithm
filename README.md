@@ -28,12 +28,12 @@
     
     + [交错字符串](./Interlaced_string.md)
 + 回溯法
-  + 基本概念
+  + [基本概念](./backtrack.md/#回溯法)
   + 练习题目
     + [组合总和 II——如何输出指定和的组合序列](./backtrack.md/#组合总和_如何输出指定和的组合序列)
     + [组合_如何输出指定位数的组合数](./backtrack.md/#组合_如何输出指定位数的组合数)
       + [递归方法](./backtrack.md/#递归方法)
       + [非递归方法](./backtrack.md/#非递归方法)
     + [子集](./backtrack.md/#子集)
-    + [子集 II](./backtrack.md/子集-二)
+    + [子集 II](./backtrack.md/#子集-二)
 
