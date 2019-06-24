@@ -11,6 +11,7 @@
   + 相关问题
     + [1.二叉树的最近公共祖先](./The_nearest_common_ancestor.md)
     + [2.不同的二叉搜索树 II](./different_binary_tree_two.md)
+    + [3.验证二叉搜索树](./binary_tree.md/#验证二叉搜索树)
 + 动态规划
 
   + [基本概念](./Dynamic_Programming.md/#动态规划概念)

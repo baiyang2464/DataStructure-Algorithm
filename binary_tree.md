@@ -101,3 +101,102 @@ public:
     }
 };
 ```
+
+#### [验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)
+
+**题目**
+
+给定一个二叉树，判断其是否是一个有效的二叉搜索树。
+
+假设一个二叉搜索树具有如下特征：
+
+节点的左子树只包含小于当前节点的数。
+
+节点的右子树只包含大于当前节点的数。
+
+所有左子树和右子树自身必须也是二叉搜索树。
+
+
+
+示例 1:
+```
+输入:
+    2
+   / \
+  1   3
+输出: true
+```
+示例 2:
+```
+输入:
+    5
+   / \
+  1   4
+     / \
+    3   6
+输出: false
+解释: 输入为: [5,1,4,null,null,3,6]。
+根节点的值为 5 ，但是其右子节点值为 4 。
+```
+
+你写的代码，利用BST中序遍历输出一个递增序列的特点，让last指向上一次上文的结点，p为当前访问的结点，只需要验证每次last->val 小于 p->val 即可
+```cpp
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        //二叉搜索树中序遍历时得到一个递增序列
+        //TreeNode * last =NULL;
+        bool flag = true;
+        TreeNode * last = NULL;
+        midOrder(root,last,flag);
+        return flag;
+        
+    }
+    void midOrder(TreeNode* p,TreeNode* &last,bool &flag)
+    {
+        if(p && flag)
+        {
+            midOrder(p->left,last,flag);
+            if(!last &&p->left==NULL)
+            {
+                last = p;//第一个被访问的结点
+                cout<<last->val<<endl;
+            }
+            else if(last)
+            {
+                if(p->val <=last->val) flag = false;
+                last = p;
+            }
+            midOrder(p->right,last,flag);
+        }
+    }
+};
+```
+
+执行时间12ms的代码，大体思路一致，看下别人怎么控制指针的
+
+```cpp
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        //二叉搜索树中序遍历时得到一个递增序列
+        //TreeNode * last =NULL;
+        bool flag = true;
+        TreeNode * last = NULL;
+        midOrder(root,last,flag);
+        return flag;
+        
+    }
+    void midOrder(TreeNode* p,TreeNode* &last,bool &flag)
+    {
+        if(p && flag)
+        {
+            midOrder(p->left,last,flag);
+            if(last && p->val <=last->val) flag =false;
+            last = p;
+            midOrder(p->right,last,flag);
+        }
+    }
+};
+```
+
