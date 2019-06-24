@@ -12,13 +12,12 @@
 + 动态规划
 
   + [基本概念](./Dynamic_Programming.md/#动态规划概念)
-+ 常见背包问题
-  
-  + [0-1背包问题](./Dynamic_Programming.md/#0-1背包问题)
+  + [常见背包问题](./Dynamic_Programming.md/#0-1背包问题)
+    + [0-1背包问题](./Dynamic_Programming.md/#0-1背包问题)
     + [完全背包问题](./Dynamic_Programming.md/#完全背包问题)
     + [多重背包问题](./Dynamic_Programming.md/#多重背包问题)
   + 练习题目
-  + [不同的二叉树](./different_binary.md)
+    + [不同的二叉树](./different_binary.md)
     + [扰乱字符串](./Scrambling_string.md)
     + [最大矩形](./max_rectangular.md)
     + [交错字符串](./Interlaced_string.md)
