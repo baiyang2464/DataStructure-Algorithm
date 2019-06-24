@@ -1,13 +1,12 @@
 ## 目录
 
-+ [二叉树](#二叉树)
-
-  + [1.二叉树定义](#1.二叉树定义)
-
-  + [2.二叉树的遍历](#2.二叉树的遍历)
-+ [练习题目](#练习题目)
-  + [二叉树的最近公共祖先](#二叉树的最近公共祖先)
-  + [不同的二叉搜索树 II](#不同的二叉搜索树 II)
++ [二叉树](### 二叉树)
++ [1.二叉树定义](#### 1.二叉树定义)
+  
++ [2.二叉树的遍历](#### 2.二叉树的遍历)
++ [练习题目](### 练习题目)
+  + [二叉树的最近公共祖先](### 二叉树的最近公共祖先)
+  + [不同的二叉搜索树 II](### 不同的二叉搜索树 II)
 
 ---
 
@@ -121,8 +120,7 @@ public:
 };
 ```
 ##练习题目
-###[236. 二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/submissions/)
-
+### [二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/submissions/)
 
 **题目:**
 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先。
@@ -174,7 +172,7 @@ public:
 };
 ```
 
-###[95. 不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/submissions/)
+### [不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/submissions/)
 
 
 **备注：**
