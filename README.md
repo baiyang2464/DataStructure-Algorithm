@@ -20,19 +20,26 @@
     + [完全背包问题](./Dynamic_Programming.md/#完全背包问题)
     + [多重背包问题](./Dynamic_Programming.md/#多重背包问题)
   + 练习题目
-    + [不同的二叉树](./different_binary.md)
+    + [1.不同的二叉树](./different_binary.md)
     
-    + [扰乱字符串](./Scrambling_string.md)
+    + [2.扰乱字符串](./Scrambling_string.md)
     
-    + [最大矩形](./max_rectangular.md)
+    + [3.最大矩形](./max_rectangular.md)
     
-    + [交错字符串](./Interlaced_string.md)
+    + [4.交错字符串](./Interlaced_string.md)
 + 回溯法
   + [基本概念](./backtrack.md/#回溯法)
   + 练习题目
-    + [组合总和 II——如何输出指定和的组合序列](./backtrack.md/#组合总和_如何输出指定和的组合序列)
-    + [组合_如何输出指定位数的组合数](./backtrack.md/#组合_如何输出指定位数的组合数)
+    + [1.组合总和 II——如何输出指定和的组合序列](./backtrack.md/#组合总和_如何输出指定和的组合序列)
+    + [2.组合_如何输出指定位数的组合数](./backtrack.md/#组合_如何输出指定位数的组合数)
       + [递归方法](./backtrack.md/#递归方法)
       + [非递归方法](./backtrack.md/#非递归方法)
-    + [子集](./backtrack.md/#子集)
-    + [子集 II](./backtrack.md/#子集-二)
+    + [3.子集](./backtrack.md/#子集)
+    + [4.子集 II](./backtrack.md/#子集-二)
+
++ 位运算
+  + [基本概念](./bit_operation.md)
+  + 练习题目
+    + [1.确定毒酒](./bit_operation.md/#确定毒酒)
+    + [2.格雷编码](./bit_operation.md/#格雷编码)
+
