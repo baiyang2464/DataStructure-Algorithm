@@ -6,13 +6,17 @@
 示例 1:
 
 输入: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac"
+
 输出: true
+
 示例 2:
 
 输入: s1 = "aabcc", s2 = "dbbca", s3 = "aadbbbaccc"
+
 输出: false
 
 **思路**
+
 本题最先想到了用回溯法，但是回溯法调用函数栈时间复杂度较高，最终最后两个用例超时了
 
 + 回溯法
