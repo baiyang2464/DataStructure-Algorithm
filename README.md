@@ -7,16 +7,16 @@
   
   + 基本概念
     + [1.二叉树定义](./binary_tree.md/#二叉树定义)
-    + [2.二叉树的三种非递归遍历](./binary_tree.md/#二叉树的三种非递归遍历)
+    + [2.容易忘的三种非递归遍历](./binary_tree.md/#二叉树的三种非递归遍历)
   + 相关问题
     + [1.二叉树的最近公共祖先](./The_nearest_common_ancestor.md)
     + [2.不同的二叉搜索树 II](./different_binary_tree_two.md)
     + [3.验证二叉搜索树](./binary_tree.md/#验证二叉搜索树)
+    + [4.恢复二叉搜索树](./binary_tree.md/#恢复二叉搜索树)
 + 动态规划
 
   + [基本概念](./Dynamic_Programming.md/#动态规划概念)
-  + [常见背包问题](./Dynamic_Programming.md/#0-1背包问题)
-    
+  + [三个背包走天下](./Dynamic_Programming.md/#0-1背包问题)
     + [0-1背包问题](./Dynamic_Programming.md/#0-1背包问题)
     + [完全背包问题](./Dynamic_Programming.md/#完全背包问题)
     + [多重背包问题](./Dynamic_Programming.md/#多重背包问题)

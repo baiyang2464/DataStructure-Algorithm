@@ -200,3 +200,119 @@ public:
 };
 ```
 
+#### [恢复二叉搜索树](https://leetcode-cn.com/problems/recover-binary-search-tree/)
+
+**题目**
+
+二叉搜索树中的两个节点被错误地交换。
+
+请在不改变其结构的情况下，恢复这棵树。
+
+示例 1:
+```
+输入: [1,3,null,null,2]
+
+   1
+  /
+ 3
+  \
+   2
+
+输出: [3,1,null,null,2]
+
+   3
+  /
+ 1
+  \
+   2
+```
+示例 2:
+```
+输入: [3,1,4,null,null,2]
+
+  3
+ / \
+1   4
+   /
+  2
+
+输出: [2,1,4,null,null,3]
+
+  2
+ / \
+1   4
+   /
+  3
+```
+
+**解题思路**
+
+比如：一个BST的中序遍历应该是递增的，那么假如一个被错误交换两结点的BST树的中序输出序列是1,2,`6`,4,5,`3`,7“，只需要在遍历过程重找出这两个错误结点，进行交换即可。
+
+怎么发现位置错误的结点：last是上一次访问的结点，则`last->val > cur->val`就是位置错误，一般来说发现两次就可找出两个位置错误的结点，最后交换它们的值就可。
+
+但是像1,`3`,`2`,4这样两个挨在一起的就能发现一次，这种情况是写代码的难点。
+
+最开始你写的代码
+
+```cpp
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        TreeNode * first = NULL,*last =NULL;
+        dfs(root,first,last);
+    }
+    void dfs(TreeNode * node,TreeNode * &first,TreeNode * &last,TreeNode * &)
+    {
+        if(node)
+        {
+            dfs(node->left,first,last);
+            if(first && last->val > node->val)
+            {
+                int tmp = first->val;
+                first->val = node->val;
+                node->val = tmp;
+            }
+            if(last && last->val > node->val)
+            {
+                first = last;
+            }
+            last = node;
+            dfs(node->right,first,last);
+        }
+    }
+};
+```
+
+这样像1,`3`,`2`,4的情况（只发现一次位置不对），就不能进行结点值得交换（代码写死了，只有发现两次位置不对才能进行交换）
+
+参考别人的代码
+
+```cpp
+class Solution {
+public:
+    void recoverTree(TreeNode* root) {
+        TreeNode * first = NULL,*second=NULL,*last =NULL;
+        dfs(root,first,second,last);
+        int tmp = first->val;
+        first->val = second->val;
+        second->val = tmp;
+    }
+    void dfs(TreeNode * node,TreeNode * &first,TreeNode * &second,TreeNode * &last)
+    {
+        if(node)
+        {
+            dfs(node->left,first,second,last);
+            if(last && last->val > node->val)//错误位置不挨着时会进入两次
+            {								 //错误位置挨着时只进入一次
+                if(!first)					 //保证first,second值正确
+                    first = last;
+                second = node;
+            }
+            last = node;
+            dfs(node->right,first,second,last);
+        }
+    }
+};
+```
+
