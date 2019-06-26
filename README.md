@@ -22,12 +22,10 @@
     + [多重背包问题](./Dynamic_Programming.md/#多重背包问题)
   + 相关问题
     + [1.不同的二叉树](./different_binary.md)
-    
     + [2.扰乱字符串](./Scrambling_string.md)
-    
     + [3.最大矩形](./max_rectangular.md)
-    
     + [4.交错字符串](./Interlaced_string.md)
+    + [5.不同的子序列](./different_binary.md/#不同的子序列)
 + 回溯法
   + [基本概念](./backtrack.md/#回溯法)
   + 相关问题
