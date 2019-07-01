@@ -13,6 +13,7 @@
     + [2.不同的二叉搜索树 II](./different_binary_tree_two.md)
     + [3.验证二叉搜索树](./binary_tree.md/#验证二叉搜索树)
     + [4.恢复二叉搜索树](./binary_tree.md/#恢复二叉搜索树)
+    + [5.如何找到二叉树每一层得最右端结点](./binary_tree.md/#如何找到二叉树每一层得最右端结点)
 + 动态规划
 
   + [基本概念](./Dynamic_Programming.md/#动态规划概念)
