@@ -12,6 +12,21 @@
 
 + 深度优先遍历
 
+```c++
+//图以邻接矩阵表示
+//无环图
+int visited[n] = {0};
+void dfs(int *graph,int v,int n)
+{
+    visited[v]=1;
+    for(int i=0;i<n;++i)
+    {
+        if(!visited[i])
+            dfs(graph,i,n);
+    }
+}
+```
+
 
 
 + 广度优先遍历

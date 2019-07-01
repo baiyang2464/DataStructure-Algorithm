@@ -26,6 +26,7 @@
     + [3.最大矩形](./max_rectangular.md)
     + [4.交错字符串](./Interlaced_string.md)
     + [5.不同的子序列](./Dynamic_Programming.md/#不同的子序列)
+    + [6.分割回文串II](./Dynamic_Programming.md/#分割回文串II)
 + 回溯法
   + [基本概念](./backtrack.md/#回溯法)
   + 相关问题
