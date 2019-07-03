@@ -102,6 +102,86 @@ public:
 };
 ```
 
+#### 二叉树空间复杂度为O(1)的遍历方式-Morris算法
+
+Morris遍历二叉树实质是利用二叉树中大量未使用得指针构建线索进行回溯
+
+注：二叉树有n个结点，每个结点有2个指针，共有n-1个结点被指针指向，则有2n-(n-1)=n+1个空闲指针
+
+Morirs算法遍历过程中会有2次接触同一结点的机会，第一次是通过原有结点之间的指针连接，第二次是通过左子树的回溯线索。因此相当于用时间换取空间。
+
+**切记：每个结点有两次接触的机会， 在第一次就访问结点，就是前序遍历，在第二次访问结点就是中序遍历**
+
+**1.中序遍历**
+
+**分析：**中序遍历的基本顺序为leftTree， root，rightTree。这里，抓住中序遍历的本质：要想访问root节点，必须先访问其leftTree。但如果不借助stack，在访问了leftTree之后，又如何能再次访问root呢？可以找到leftTree最后访问的结点，对其进行线索化，然后可通过线索回溯至root结点。
+
+![img](https://images2015.cnblogs.com/blog/1107295/201704/1107295-20170418153624196-1120151240.png)
+
+从图中可以看出，我们可以在leftTree中找到root节点在中序遍历下的前驱节点pre，将该前驱节点pre的右指针指向root节点，那么，下次在访问完leftTree之后，便能通过前驱节点pre回到root节点。
+
+大体意思每次去找当前节点的左子树的最右子节点，最右子节点的右节点指向当前根节点，然后以左子树为根节点，再找其左子树的最右子节点，最右子节点再指向当前的根节点，这是建立线索的过程，回溯的过程要记住“第二次时候做判断”，详见代码
+
+```c++
+void inOrderTraverse(TreeNode *root){//Morris
+  TreeNode *cur = root;
+  TreeNode *pre = nullptr;
+  while(cur){
+    if(cur->left){
+      pre = cur->left;							//找左子树的最右结点
+      while(pre->right!=NULL && pre->right != cur){
+        pre = pre->right;
+      }
+      if(pre->right==NULL){						//第一次接触
+        pre->right = cur;						//建立线索
+        cur = cur->left;						//根结点指针移动到左子树，找左子树的左子树的线索
+      }else{									//第二次接触
+        pre->right = nullptr;					//销毁线索，恢复原来的二叉树结构
+        visit(cur);
+        cur = cur->right;						//访问右子树
+      }
+    }else{										//如果cur左子树为空，则可直接访问
+      visit(cur);	
+      cur = cur->right;
+    }
+  }
+}
+```
+
+**2.前序遍历**
+
+前序遍历的思路和中序遍历的思路完全相似，只是访问时机的不同。在前序遍历中，root节点需要先访问到，然后再访问其leftTree和rightTree。
+
+```c++
+void preOrderTraverse(TreeNode *root){//Morris
+  TreeNode *cur = root;
+  TreeNode *pre = nullptr;
+  while(cur){
+    if(cur->left){
+      pre = cur->left;
+      while(pre->right && pre->right != cur){
+        pre = pre->right;
+      }
+      if(!pre->right){							//first touch
+        pre->right = cur;
+        visit(cur);								//visit root at first touch
+        cur = cur->left;
+      }else{
+        pre->right = nullptr;
+        cur = cur->right;
+      }
+    }else{
+      visit(cur);								//visit root
+      cur = cur->right;
+    }
+  }
+}
+```
+
+**3.后序遍历**
+
+
+
 #### [验证二叉搜索树](https://leetcode-cn.com/problems/validate-binary-search-tree/)
 
 **题目**
