@@ -377,3 +377,93 @@ public:
     }
 };
 ```
+
+
+
+#### 从有序链表构建平衡二叉树
+
+**题目** [有序链表转换二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)
+
+给定一个单链表，其中的元素按升序排序，将其转换为高度平衡的二叉搜索树。
+
+本题中，一个高度平衡二叉树是指一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1。
+
+示例:
+
+给定的有序链表： [-10, -3, 0, 5, 9],
+
+一个可能的答案是：[0, -3, 9, -10, null, 5], 它可以表示下面这个高度平衡二叉搜索树：
+```
+      0
+     / \
+   -3   9
+   /   /
+ -10  5
+```
+
+
+
+##### (一)有序链表构建有序数组来生成AVL
+
+将有序链表转成有序数组，每次从有序数组中取中间位置的元素作为一棵AVL树的根节点，然后递归的用数组的中间元素的左边元素构建根结点的左子树，用数组的中间元素的右边元素构建根结点的右子树
+
+每次找中间元素位置可用mid = (left+right)/2
+
+特点是利用了数组可以以O(1)时间复杂度取任意位置的元素，每次取中间位置元素保证了左右子树深度差不超过1，且本是升序数组，保证了构建的树是搜索树
+
+##### (二)从单链表中找中间结点来生成AVL
+
+每次在一个链表中用[快慢指针法](./list.md/#如何在单链表中找中间结点)找中间结点，用该结点的值作为AVL树的根节点值，然后递归的生成左右子树
+
+##### （三）模仿中序遍历生成AVL树
+
+先看下中序遍历的模板
+
+```c++
+void midOrder(node * t)
+{
+    if(!t) return;
+    midOrder(t->left);
+    visit(t);			//可以下功夫的地方
+    midorder(t-right);
+}
+```
+
+观察`第5行：visit(t)`处
+
+之前遍历时是只是访问`t`结点，现在我们把链表对应结点的值赋值给`t`，然后第4行建立t的左子树，第6行建立t的右子树，然后将t返回给上层，递归结束后可以用有序的链表建立一棵二叉搜索树了
+
+但上述方法建立的树肯定不是平衡的，**怎么建立一个平衡的树？**
+
+在学习二分搜索时，是不是利用mid = (left + right)/2建立了一颗平衡的搜索树结构！将此两种方法结合就可以构建出平衡的二叉搜索树了。
+
+**代码**
+
+```c++
+class Solution {
+public:
+    TreeNode* sortedListToBST(ListNode* head) {
+        ListNode * p =head;
+        int n =0;
+        while(p)								//求链表的总长度
+        {
+            p=p->next;
+            ++n;
+        }
+        return helper(head,0,n-1);
+    }
+private:
+    TreeNode * helper(ListNode * &p,int l,int r)
+    {
+        if(l>r) return NULL;
+        int mid = (l+r)/2;						//用来约束树的框架
+        TreeNode * left=helper(p,l,mid-1);		//左
+        TreeNode * cur = new TreeNode(p->val);	//中
+        cur->left = left;						
+        p=p->next;
+        cur->right=helper(p,mid+1,r);			//右
+        return cur;
+    }
+};
+```
+
