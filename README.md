@@ -1,3 +1,11 @@
+<p align="center">
+	<img src=./pictures/hello_world.jpg alt="Sample"  width="500">
+	<p align="center">
+		<em>hello my world</em>
+	</p>
+</p>
+
+
 + 记录遇到的一些有趣的算法问题
 + 记录一些常见的数据结构
 
