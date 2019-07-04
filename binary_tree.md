@@ -549,3 +549,96 @@ private:
 };
 ```
 
+#### [二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
+
+给定一个非空二叉树，返回其最大路径和。
+
+本题中，路径被定义为一条从树中任意节点出发，达到任意节点的序列。该路径至少包含一个节点，且不一定经过根节点。
+
+示例 1:
+
+输入: [1,2,3]
+```
+       1
+      / \
+     2   3
+```
+输出: 6
+示例 2:
+
+输入: [-10,9,20,null,null,15,7]
+```
+   -10
+   / \
+  9  20
+    /  \
+   15   7
+```
+输出: 42
+
+
+
+**思路**
+
+首先应该想到利用后序遍历，因为要先判断左右子树的情况，在判断加入根结点后的情况。
+
+设计后序遍历递归函数
+
+加入二叉树为如下所示：
+
+![](./pictures/012.png)
+
+递归过程：
+
++ 遇到空结点时候返回0；
+
++ 遇到非空结点则计算以该结点为**根**的树中最长路径和，具体先计算左右子树的最大路径和，然后计算考虑加入当前根结点时候的最大路径和，如下图所示，当前结点为`-10`，则加入当前节点后，最大路径和有以下几种情况，取最大即可；
+
+![](./pictures/123.png)
+
++ 返回值：返回以该结点为**头结点**的最大路径和。只有三种情况，取最大。
+
+![](./pictures/456.png)
+
+代码：
+
+```c++
+class Solution {
+public:
+    //重点：采用后续遍历
+    //分清情况，一点一点的写出来，其实并不是很难
+    int maxPathSum(TreeNode* root) {
+        res= INT_MIN;
+        postOrder(root);
+        return res;
+    }
+private:
+    int res;
+    int postOrder(TreeNode * cur)
+    {
+        if(cur==NULL) return 0;
+        int left = postOrder(cur->left);
+        int right= postOrder(cur->right);
+        //找该棵树中的最大路径和
+        int tmp = cur->val;
+        if(tmp<0)
+        {
+            res = max(res,tmp);
+            res = max(res,tmp+left+right);
+        }
+        else
+        {
+            if(left>0) tmp+=left;
+            if(right>0) tmp+=right;
+            res = max(res,tmp);
+        }
+        //处理返回值
+        tmp = cur->val;
+        if(left>0 || right>0) tmp+=max(left,right);
+        return tmp;
+    }
+};
+```
+
+
+
