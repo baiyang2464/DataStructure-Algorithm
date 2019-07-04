@@ -118,7 +118,12 @@ Morirs算法遍历过程中会有2次接触同一结点的机会，第一次是�
 
 中序遍历的基本顺序为leftTree， root，rightTree。这里，抓住中序遍历的本质：要想访问root节点，必须先访问其leftTree。但如果不借助stack，在访问了leftTree之后，又如何能再次访问root呢？可以找到leftTree最后访问的结点，对其进行线索化，然后可通过线索回溯至root结点。
 
-![img](https://images2015.cnblogs.com/blog/1107295/201704/1107295-20170418153624196-1120151240.png)
+<p align="center">
+	<img src=https://images2015.cnblogs.com/blog/1107295/201704/1107295-20170418153624196-1120151240.png alt="Sample"  width="500">
+	<p align="center">
+		<em>二叉树</em>
+	</p>
+</p>
 
 从图中可以看出，我们可以在leftTree中找到root节点在中序遍历下的前驱节点pre，将该前驱节点pre的右指针指向root节点，那么，下次在访问完leftTree之后，便能通过前驱节点pre回到root节点。
 
@@ -586,7 +591,7 @@ private:
 
 假如二叉树如下所示：
 
-![](./pictures/012.png)
+
 
 <p align="center">
 	<img src=./pictures/012.png alt="Sample"  width="250">
@@ -601,11 +606,23 @@ private:
 
 + 遇到非空结点则计算以该结点为**根**的树中最长路径和，具体先计算左右子树的最大路径和，然后计算考虑加入当前根结点时候的最大路径和，如下图所示，当前结点为`-10`，则加入当前节点后，最大路径和有以下几种情况，取最大即可；
 
-![](./pictures/123.png)
+
+
+<p align="center">
+	<img src=./pictures/123.png alt="Sample"  width="550">
+	<p align="center">
+		<em>遍历到非空结点</em>
+	</p>
+</p>
 
 + 返回值：返回以该结点为**头结点**的最大路径和。只有三种情况，取最大。
 
-![](./pictures/456.png)
+<p align="center">
+	<img src=./pictures/456.png alt="Sample"  width="550">
+	<p align="center">
+		<em>返回值情况</em>
+	</p>
+</p>
 
 代码：
 
