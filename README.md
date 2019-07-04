@@ -1,9 +1,11 @@
 <p align="center">
-	<img src=./pictures/hello_world.jpg alt="Sample"  width="500">
+	<img src=./pictures/hello_world.jpg alt="Sample"  width="400">
 	<p align="center">
 		<em>hello my world</em>
 	</p>
 </p>
+
+<img src=./pictures/hello_world.jpg width="400" height="" alt="hello my world" align=center>
 
 
 + 记录遇到的一些有趣的算法问题
