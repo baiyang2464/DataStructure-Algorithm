@@ -588,7 +588,12 @@ private:
 
 ![](./pictures/012.png)
 
-<img src=./pictures/012.png style="zoom:50%">
+<p align="center">
+	<img src=./pictures/012.png alt="Sample"  width="250">
+	<p align="center">
+		<em>二叉树例子</em>
+	</p>
+</p>
 
 递归过程：
 
