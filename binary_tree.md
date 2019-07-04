@@ -584,9 +584,11 @@ private:
 
 设计后序遍历递归函数
 
-加入二叉树为如下所示：
+假如二叉树如下所示：
 
 ![](./pictures/012.png)
+
+<img src=./pictures/012.png style="zoom:50%">
 
 递归过程：
 
