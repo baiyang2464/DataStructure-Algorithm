@@ -367,3 +367,76 @@ public:
 };
 ```
 
+
+
+#### [单词拆分](https://leetcode-cn.com/problems/word-break/)
+
+**题目**
+
+给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
+
+说明：
+
++ 拆分时可以重复使用字典中的单词。
++ 你可以假设字典中没有重复的单词。
+
+示例 1：
+
+```
+输入: s = "leetcode", wordDict = ["leet", "code"]
+输出: true
+解释: 返回 true 因为 "leetcode" 可以被拆分成 "leet code"。
+```
+
+示例 2：
+
+```
+输入: s = "applepenapple", wordDict = ["apple", "pen"]
+输出: true
+解释: 返回 true 因为 "applepenapple" 可以被拆分成 "apple pen apple"。
+     注意你可以重复使用字典中的单词。
+```
+
+
+示例 3：
+```
+输入: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+输出: false
+```
+
+**思路**
+
+这种类型的题目暴力法一般是朴素的回溯法，直接超时
+
+如果加入备忘录，以防止重复访问已经访问过的字符串，可以大大缩小时间开销
+
+回溯算法建立一棵搜索树，每次搜索一个单词，**备忘录记录当前剩余字符串能否“单词拆分”**
+
+**代码**
+
+```c++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_map<string,bool> memo;
+        return helper(s,wordDict,memo);
+    }
+    
+    bool helper(string s,vector<string>& wordDict,unordered_map<string,bool> &memo)
+    {
+        if(memo.count(s)) return memo[s];//备忘录包含整个字符串则直接返回该结果
+        if(s.empty()) return true;//空串肯定可以拆分
+        int flag = false;
+        for(auto word:wordDict)
+        {
+            if(s.substr(0,word.length())==word && helper(s.substr(word.length()),wordDict,memo))
+            {
+                flag  = true;
+                break;
+            }
+        }
+        return memo[s]=flag;
+    }
+};
+```
+
