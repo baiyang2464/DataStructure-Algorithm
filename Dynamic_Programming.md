@@ -362,7 +362,7 @@ public:
 
 
 
-#### [单词拆分](https://leetcode-cn.com/problems/word-break/)
+### [单词拆分](https://leetcode-cn.com/problems/word-break/)
 
 给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
 
@@ -395,10 +395,12 @@ public:
 0. 原问题考虑s[0,:]能否以字典中的单词拆分
 
 1. 对字符串s中子串s[start..end]判断是否在字典中
-  a.若子串在，则递归的考虑s[end+1,:]能否单词拆分
-  b. 若不在，则end=end+1，回到步骤(1)  （横向搜索）
+a.若子串在，则递归的考虑s[end+1,:]能否单词拆分
+  
 
-  c.当前能拆分且之后都能拆分，返回true
+b. 若不在，则end=end+1，回到步骤(1)  （横向搜索）
+
+c.当前能拆分且之后都能拆分，返回true
 
 2. 返回false
 
@@ -415,7 +417,7 @@ s="aaab"
 dict={"a","aa","aaa","aaaa"}
 ```
 
-
+回溯树：
 
 <p align="center">
 	<img src=./pictures/word_segment.png alt="Sample"  width="700">
@@ -427,6 +429,8 @@ dict={"a","aa","aaa","aaaa"}
 **相同颜色的圆圈框出来的就是冗余调用**
 
 为了避免这种情况，我们可以使用记忆化的方法，使用一个memo 数组会被用来保存子问题的结果。每当访问到已经访问过的后缀串，直接用memo 数组中的值返回而不需要继续调用函数，memo[i]表示字符串s从下标i 至结束都可进行单词拆分(true)或否（false）。
+
+增加备忘录后的回溯树：
 
 <p align="center">
 	<img src=./pictures/word_segment1.png alt="Sample"  width="700">
@@ -505,7 +509,7 @@ public:
 
 将字典中的单词视为物品
 
-字符串视为背包，背包总容量有限，且只能放指定物品，且一种物品可以放多个
+字符串视为背包，背包总容量有限，且只能放指定的某些种类物品，但我们不知道能放哪些物品（所以需要遍历词典），一种物品可以放0个或多个
 
 ```c++
 class Solution {
