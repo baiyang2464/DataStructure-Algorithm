@@ -362,6 +362,173 @@ public:
 
 
 
+#### [单词拆分](https://leetcode-cn.com/problems/word-break/)
+
+给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
+
+说明：
+
+拆分时可以重复使用字典中的单词。
+你可以假设字典中没有重复的单词。
+
+示例 1：
+```
+输入: s = "leetcode", wordDict = ["leet", "code"]
+输出: true
+解释: 返回 true 因为 "leetcode" 可以被拆分成 "leet code"。
+```
+示例 2：
+```
+输入: s = "applepenapple", wordDict = ["apple", "pen"]
+输出: true
+解释: 返回 true 因为 "applepenapple" 可以被拆分成 "apple pen apple"。
+     注意你可以重复使用字典中的单词。
+```
+示例 3：
+```
+输入: s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"]
+输出: false
+```
+
+**（一）暴力回溯法**
+
+0. 原问题考虑s[0,:]能否以字典中的单词拆分
+
+1. 对字符串s中子串s[start..end]判断是否在字典中
+  a.若子串在，则递归的考虑s[end+1,:]能否单词拆分
+  b. 若不在，则end=end+1，回到步骤(1)  （横向搜索）
+
+  c.当前能拆分且之后都能拆分，返回true
+
+2. 返回false
+
+这里果不其然超时了，对于最坏情况`s="aaaaaaaa···aab"`和`wordDict={"a","aa","aaa",...}`这样的情况，每一个前缀都在字典中，每个字母可最多回溯n次，此时回溯树的时间复杂度会达到 n^n（n的n次方） 。
+
+**（二）带备忘录的回溯法**
+
+在暴力回溯中可以看到许多函数调用都是冗余的，也就是函数会对相同的字符串调用多次回溯函数。
+
+例子：
+
+```c++
+s="aaab"
+dict={"a","aa","aaa","aaaa"}
+```
+
+
+
+<p align="center">
+	<img src=./pictures/word_segment.png alt="Sample"  width="700">
+	<p align="center">
+		<em>单词拆分</em>
+	</p>
+</p>
+
+**相同颜色的圆圈框出来的就是冗余调用**
+
+为了避免这种情况，我们可以使用记忆化的方法，使用一个memo 数组会被用来保存子问题的结果。每当访问到已经访问过的后缀串，直接用memo 数组中的值返回而不需要继续调用函数，memo[i]表示字符串s从下标i 至结束都可进行单词拆分(true)或否（false）。
+
+<p align="center">
+	<img src=./pictures/word_segment1.png alt="Sample"  width="700">
+	<p align="center">
+		<em>单词拆分</em>
+	</p>
+</p>
+
+```c++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        //9:31-9:46
+        vector<int> memo(s.length(),-1);
+        unordered_set<string> words(wordDict.begin(),wordDict.end());
+        return helper(s,words,memo,0);
+    }
+    
+    bool helper(const string &s,const unordered_set<string> &words,vector<int> &memo,int start)
+    {
+        if(start==s.length()) return true;
+        if(memo[start]!=-1) return memo[start];
+        for(int i=start;i<s.length();++i)
+        {
+            if(words.count(s.substr(start,i-start+1)) && helper(s,words,memo,i+1))
+            {
+                memo[start] = 1;
+                return true;
+            }
+        }
+        memo[start] =0;
+        return false;
+    }
+};
+```
+
+**分析**
+
++ 时间复杂度：`O(n^2)`，每次字母最多回溯n次下，但计算过的子树不会在真正回溯多次
++ 空间复杂度：`O(n)` 。回溯树的深度可以达到` n `级别。
+
+**（三）动态规划**
+
+转移公式：
+
+![](./pictures/mylatex20190709_160812.png)
+
+`dp[i]`表示字符串`s`自`开始`到下标`i-1`的子串能否被单词划分，它由`dp[j]`和单词`word=s[j:i]`是否在词典中共同决定，只要存在这样的`j`使得右边的式子为真，则`dp[i]`就为真。
+
+```c++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        vector<bool> dp(s.length()+1,false);
+        unordered_set<string> words(wordDict.begin(),wordDict.end());
+        //dp[i] 表示到s[0..i-1]的字符串能被单词拆分
+        if(s.empty()) return true;
+        dp[0] = true;
+        for(int i=1;i<=s.length();++i)
+            for(int j=0;j<i;j++)
+            {
+                dp[i] = dp[j] && words.count(s.substr(j,i-j));
+                if(dp[i]) break;//存在一次为真就跳出内部循环
+            }
+        return dp[s.length()];
+    }
+};
+```
+
+**分析**
+
++ 时间复杂度：`O(n^2)`，两个循环
++ 空间复杂度：`O(n)` 。一个数组
+
+**（三）仿背包问题动态规划**
+
+将字典中的单词视为物品
+
+字符串视为背包，背包总容量有限，且只能放指定物品，且一种物品可以放多个
+
+```c++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        vector<bool> dp(s.length()+1,false);
+        unordered_set<string> words(wordDict.begin(),wordDict.end());
+        //dp[i] 表示到s[0..i-1]的字符串能被单词拆分
+        if(s.empty()) return true;
+        dp[0] = true;//空字符肯定符合要求
+        for(int i=1;i<=s.length();++i)
+            for(auto word:words)
+            {
+                if(i<word.length()) continue;//s中起始位置至少要比一个单词长
+                int pos= i-word.length();//计算起始位置
+                dp[i] = dp[pos] && word==s.substr(pos,word.length());//从字典中取一个单词，看能否放进串s的对应位置
+                if(dp[i]) break;
+            }
+        return dp[s.length()];
+    }
+};
+```
+
 
 
 

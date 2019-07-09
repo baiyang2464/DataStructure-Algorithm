@@ -171,3 +171,67 @@ cost = [3,4,3]
 
 [看官方证明吧](<https://leetcode-cn.com/problems/gas-station/solution/jia-you-zhan-by-leetcode/>)
 
+
+
+#### [分发糖果](https://leetcode-cn.com/problems/candy/)
+
+**题目**
+
+老师想给孩子们分发糖果，有 N 个孩子站成了一条直线，老师会根据每个孩子的表现，预先给他们评分。
+
+你需要按照以下要求，帮助老师给这些孩子分发糖果：
+
+每个孩子至少分配到 1 个糖果。
+相邻的孩子中，评分高的孩子必须获得更多的糖果。
+那么这样下来，老师至少需要准备多少颗糖果呢？
+
+```
+示例 1:
+
+输入: [1,0,2]
+输出: 5
+解释: 你可以分别给这三个孩子分发 2、1、2 颗糖果。
+示例 2:
+
+输入: [1,2,2]
+输出: 4
+解释: 你可以分别给这三个孩子分发 1、2、1 颗糖果。
+     第三个孩子只得到 1 颗糖果，这已满足上述两个条件。
+```
+
+**思路**
+
+题本身可以用贪心法来做，我们用candy[n]表示每个孩子的糖果数，遍历过程中，
+
+如果孩子i的rate大于左边孩子i-1 的rate，那么当前最好的选择自然是：给孩子i的糖果数=给孩子i-1的糖果数+1（且不需要判断是否candy[i+1]<=candy[i]，这是因为在每次更新前，当前学生的糖果数一定小于等于他左邻居的糖果数。）
+
+如果孩子i的rate小于等于右边孩子i+1 的rate怎么办？这个时候就不大好办了，因为我们不知道当前最好的选择是给孩子i+1多少糖果。
+
+**解决方法是：暂时不处理这种情况。等数组遍历完了，我们再一次从尾到头遍历数组（贪心策略）**
+
+这回逆过来贪心，就可以处理之前略过的孩子。比较i与其右i+1，当ratings[i]>ratings[i+1]，则给i的糖要比i-1的多，因为有些i已经得到了更多的糖，所以要比较candy[i]与candy[i+1]+1的关系，小于时要candy[i]=candy[i+1]+1
+
+最后累加candy[n]即得到最小糖果数。
+
+```c++
+class Solution {
+public:
+    int candy(vector<int>& ratings) {
+        int n = ratings.size();
+        vector<int> tmp(n,1);
+        int sum=0;
+        for(int i=1;i<n;++i)
+            if(ratings[i]>ratings[i-1])
+                tmp[i]=tmp[i-1] +1;
+
+        for(int i=n-2;i>=0;--i)
+            if(ratings[i]>ratings[i+1] && tmp[i]<=tmp[i+1])
+                tmp[i]=tmp[i+1] +1;
+
+        for(auto num:tmp)
+            sum+=num;
+        return sum;
+    }
+};
+```
+

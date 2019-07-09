@@ -40,12 +40,14 @@
     + [04.交错字符串](./Interlaced_string.md)
     + [05.不同的子序列](./Dynamic_Programming.md/#不同的子序列)
     + [06.分割回文串II](./Dynamic_Programming.md/#分割回文串II)
+    + [07.单词拆分](./Dynamic_Programming.md/#单词拆分)
   
 + 贪心算法
   
   + [01.贪心算法与动态规划联系和区别](./greedy.md/#贪心算法与动态规划联系和区别)
   + 02.相关问题
     + [01.加油站](./greedy.md/#加油站)
+    + [02.分糖果](./greedy.md/#分发糖果)
   
 + 回溯法
   
