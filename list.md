@@ -139,3 +139,215 @@ public:
     }
 };
 ```
+
+
+
+## 判断单链表是否有环
+
+涉及题目：[环形链表](https://leetcode-cn.com/problems/linked-list-cycle)
+
+**题目**
+
+给定一个链表，判断链表中是否有环。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+
+示例 1：
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：true
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png alt="Sample"  width="250">
+	<p align="center">
+		<em>有环链表</em>
+	</p>
+</p>
+
+示例 2：
+
+```
+输入：head = [1,2], pos = 0
+输出：true
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png alt="Sample"  width="130">
+	<p align="center">
+		<em>有环链表</em>
+	</p>
+</p>
+
+示例 3：
+
+```
+输入：head = [1], pos = -1
+输出：false
+解释：链表中没有环。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png  width="40">
+	<p align="center">
+		<em>一个结点没有环</em>
+	</p>
+</p>
+
+**（一）用哈希表存储结点**
+
+遍历链表，将访问过的结点都存储到哈希表中，当再次访问已经访问过的结点时，则有环。
+
+```c++
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        unordered_set<ListNode*> hash;
+        ListNode * cur = head;
+        while(cur && hash.count(cur) ==0 )
+        {
+            hash.insert(cur);
+            cur=cur->next;
+        }
+        return cur;
+    }
+};
+```
+
+
+
+时间复杂度：O(n)，遍历一次
+
+空间复杂度：O(n)，存储所有结点
+
+**（二）快慢指针法**
+
+快指针每次走两步，慢指针每次走一步，若快慢指针相遇而没有变成`NULL`则有环，否则无环
+
+```c++
+class Solution {
+    public:
+    bool hasCycle(ListNode *head) {
+        if(!head || !head->next) return false;
+        ListNode * slow = head;
+        ListNode * fast= head;
+        while(slow &&fast && fast->next)
+        {
+            fast=fast->next->next;
+            slow=slow->next;
+            if(fast==slow) return true;
+        }
+        return false;
+    }
+};
+```
+
+时间复杂度：O(n)，有环的话最多将链表遍历二次
+
+空间复杂度：O(1)
+
+## [环形链表-II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
+
+给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+
+为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。 如果 pos 是 -1，则在该链表中没有环。
+
+说明：不允许修改给定的链表。
+
+示例 1：
+```
+输入：head = [3,2,0,-4], pos = 1
+输出：tail connects to node index 1
+解释：链表中有一个环，其尾部连接到第二个节点。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist.png alt="Sample"  width="250">
+	<p align="center">
+		<em>有环链表</em>
+	</p>
+</p>
+
+示例 2：
+
+```
+输入：head = [1,2], pos = 0
+输出：tail connects to node index 0
+解释：链表中有一个环，其尾部连接到第一个节点。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test2.png alt="Sample"  width="130">
+	<p align="center">
+		<em>有环链表</em>
+	</p>
+</p>
+
+示例 3：
+
+```
+输入：head = [1], pos = -1
+输出：no cycle
+解释：链表中没有环。
+```
+
+<p align="center">
+	<img src=https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/12/07/circularlinkedlist_test3.png  width="40">
+	<p align="center">
+		<em>一个结点没有环</em>
+	</p>
+</p>
+
+**思路**
+
+找环的头结点分三步
+
+1. 用快慢指针找到相遇结点；
+2. 用快慢指针从相遇结点出发到再次相遇，计算环的长度len；
+3. front指针从head出发先走len步，然后before指针从head出发与front同步，front与before第一次相遇点就是如环的头结点
+
+关键就是把环的长度计算出来
+
+**代码**
+
+```c++
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        //找第一次相遇结点
+        if(!head) return NULL;
+        ListNode * fast = head,* slow = head;
+        ListNode * start = NULL;
+        while(slow && fast && fast->next && !start)
+        {
+            fast = fast->next->next;
+            slow = slow->next;
+            if(fast==slow)
+                start= fast;
+        }
+        if(!start) return NULL;
+        //计算环的长度
+        int len = 0;
+        do{
+            slow = slow->next;
+            ++len;
+        }while(slow!=start);
+        //front先走len步
+        ListNode * front = head, * before = head; 
+        while(len--)
+            front = front->next;
+        while(front != before)
+        {
+            front = front->next;
+            before = before->next;
+        }
+        return front;
+    }
+};
+```
+
+时间复杂度：O(n)，有环的话链表仅仅遍历数次而已
+
+空间复杂度：O(1)
