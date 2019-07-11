@@ -142,3 +142,170 @@ while循环只有在头结点使执行，整个算法只遍历了一次数组
 空间复杂度：O(n)
 
 采用hash表
+
+
+
+#### [LRU缓存机制](https://leetcode-cn.com/problems/lru-cache/)
+
+**题目**
+
+运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制。它应该支持以下操作： 获取数据 get 和 写入数据 put 。
+
+获取数据 get(key) - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），且将该密钥的值标记为最近使用，否则返回 -1。
+写入数据 put(key, value) - 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。
+
+进阶:
+
+你是否可以在 O(1) 时间复杂度内完成这两种操作？
+
+示例:
+```
+LRUCache cache = new LRUCache( 2 /* 缓存容量 */ );
+
+cache.put(1, 1);
+cache.put(2, 2);
+cache.get(1);       // 返回  1
+cache.put(3, 3);    // 该操作会使得密钥 2 作废
+cache.get(2);       // 返回 -1 (未找到)
+cache.put(4, 4);    // 该操作会使得密钥 1 作废
+cache.get(1);       // 返回 -1 (未找到)
+cache.get(3);       // 返回  3
+cache.get(4);       // 返回  4
+cache.put(3,5);     // 该操作会使得密钥 3 得到更新
+cache.put(5,1);     // 该操作会使得密钥 4 作废
+```
+
+
+
+**思路**
+
+LRU（最近最少使用）内存页面管理机制
+
++ 在内存满时将内存队列尾部的页面换出以给新访问不在内存中的页面提供位置；
+
++ 最近访问的页面会被放到内存队列头部，以表示最近访问过；
+
++ 以O(1)时间复杂度完成操作；
+
+这要求LRU中要有一个队列，能先进先出，且可将最近访问的数据调到头部。
+
+操作的时间复杂度要为O(1)，则自然会想到用hash来存储key可以使得key的查询为O(1)的
+
+为了使得结点交换的操作为O(1)，队列不可能用数组，只能用链表，则hash表中键为key，值为链表中对应结点的指针
+
+链表中删除队尾结点需要将尾指针移动前前一个结点，因此链表应该是双向链表
+
+删除链表的尾结点时，也要删除hash表中对应的键值对，需要知道链表尾结点对应的key，因此结点的成员应存储该结点的key
+
+所以LRU的数据结构应该是个hash双向链表，链表结点应该包含以下成员：
+
+```c++
+class node{
+    int key;
+    int val;
+    node *next;
+    node *pre;
+};
+```
+
+实现代码：
+
+```c++
+class node{
+    public:
+    node(int x,int y)
+    :key(x),val(y),next(NULL),pre(NULL){}
+    int key;
+    int val;
+    node *next;
+    node *pre;
+};
+class LRUCache {
+    public:
+    LRUCache(int capacity) 
+    :_capacity(capacity)
+    ,_size(0)
+    ,_hash()
+    ,_head(NULL)
+    ,_tail(NULL)
+    {}
+
+    int get(int key) {
+        if(_size>0)
+        {
+            if(_hash.count(key))//已经存在
+            {
+                //最近被使用，调换结点在链表中的位置
+                node *ptr = _hash[key];
+                move2head(ptr);
+                return ptr->val;
+            } 
+            else return -1;
+        }
+        else return -1;
+    }
+
+    void put(int key, int value) {
+        if(_hash.count(key))//已经存在
+        {
+            _hash[key]->val = value;//更新值
+            move2head(_hash[key]);//将结点移动到头结点
+            return;
+        }
+        if(_size==_capacity)//容量达到饱和，需要换出
+        {
+            node * ptr = _tail;
+            if(_head==_tail)
+            {
+                _head = _tail = NULL;
+            }
+            else
+            {
+                _tail = _tail->pre;
+                _tail->next = NULL;
+            }
+            //删除hash表中相应值
+            _hash.erase(ptr->key);
+            //取出链表最后一个结点
+            delete ptr;
+            --_size;
+        }
+        node * p = new node(key,value);
+        p->next = _head;
+        if(_head)
+            _head->pre = p;
+        _head = p;
+        if(!_tail)//tail为空，即size=0的特殊情况
+            _tail = _head;
+        _hash.insert({key,_head});
+        ++_size;
+    }
+    void move2head(node * ptr)//将已经访问过的结点移至链表头结点
+    {
+        if(_head == _tail || _head==ptr) return;
+        if(_tail == ptr) _tail = ptr->pre;
+        if(ptr->pre)
+            ptr->pre->next = ptr->next;
+        if(ptr->next)
+            ptr->next->pre = ptr->pre;
+        ptr->next = _head;
+        ptr->pre=NULL;
+        _head->pre = ptr;
+        _head = ptr;
+    }
+    private:
+    int _capacity;
+    int _size;
+    unordered_map<int, node*> _hash;
+    node * _head;
+    node * _tail;
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
+```
+
