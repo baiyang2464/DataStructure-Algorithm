@@ -40,7 +40,8 @@
 + **你不能只是单纯的改变节点内部的值**，而是需要实际的进行节点交换。
 
 **代码:**
-> **感悟:**该题目并不难，但是你首次做却做了很久，一是不太熟悉链表操作了，而是C/C++语言的指针用法不熟悉了，忘了函数传参时什么时候会改变实参什么时候又不会。
+
+**感悟:**该题目并不难，但是你首次做却做了很久，一是不太熟悉链表操作了，而是C/C++语言的指针用法不熟悉了，忘了函数传参时什么时候会改变实参什么时候又不会。
 
 ```c++
  ListNode* reverseKGroup(ListNode* head, int k) {
@@ -351,3 +352,104 @@ public:
 时间复杂度：O(n)，有环的话链表仅仅遍历数次而已
 
 空间复杂度：O(1)
+
+## [排序链表](https://leetcode-cn.com/problems/sort-list/)
+
+在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
+
+示例 1:
+```
+输入: 4->2->1->3
+输出: 1->2->3->4
+```
+示例 2:
+```
+输入: -1->5->3->4->0
+输出: -1->0->3->4->5
+```
+
+**思路**
+
+题目要求O(n log n) 时间复杂度对链表进行排序（空间复杂度暂且不管），可以考虑归并排序
+
+归并排序分为两步：
+
+**第一步： 使用快慢指针法把链表分割成两个链表**
+
++ 使用快慢指针找到链表中间结点
+
++ 把链表分成两个链表
+
++ 不用考虑奇偶数问题
+
+**第二步： 递归的合并有序的链表（使用归并算法）**
+
++ 第一步得到的两个链表是两个子问题，子问题递归的进行分割和归并
+
++ 两个子函数返回已经有序的子问题链表的头指针，归并两个有序链表为一个链表
+
++ 使用递归，每次只判断链表头，代码简洁且易懂
+
+**总结**
+
++ 把问题分解成子问题，比较容易解决（分成两步（二分法和合并有序链表））
+
++ 如果循环解决问题困难，考虑使用递归（合并有序链表）
+
+```c++
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        if(!head || !head->next) return head;
+        ListNode * slow = head,* fast = head;
+        //快慢指针找中间结点
+        while(fast && fast->next)
+        {
+            fast = fast->next;
+            if(!fast->next) break;
+            fast = fast->next;
+            slow=slow->next;
+        }
+        fast = slow->next;
+        slow->next = NULL;//一定要前后分割开
+        return merge(sortList(head),sortList(fast));//归并有序的子链表
+    }
+    ListNode * merge(ListNode * left,ListNode * right)//二路归并排序要求归并的两个子序列分别是有序的
+    {
+        ListNode * head = NULL;
+        ListNode * min=NULL,*tail=NULL;
+        while(left && right)
+        {
+            if(left->val < right->val)
+            {
+                min = left;
+                left = left->next;
+            }
+            else
+            {
+                min = right;
+                right = right->next;
+            }
+            if(!tail)
+                tail = min;
+            else
+            {
+                min->next = tail->next;
+                tail->next = min;
+                tail = min;
+            }
+            if(!head)
+                head = tail;
+        }
+        if(left)
+            tail->next = left;
+        if(right)
+            tail->next = right;
+        return head;
+    }
+};
+```
+
+**分析**
+
+时间复杂度：O(nlogn)，递归树深度为logn，递归过程中每层的问题的总规模是n，所以时间复杂度是O(n*logn)
