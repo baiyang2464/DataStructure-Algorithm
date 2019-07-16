@@ -182,7 +182,9 @@ int main()
 }
 ```
 
+### 不好惹的子序列问题
 
+[动态规划——最长递增子序列、最长公共子序列、最长公共子串（python实现）](https://www.cnblogs.com/anzhengyu/p/11166708.html)
 
 ### [不同的子序列](https://leetcode-cn.com/problems/distinct-subsequences/)
 

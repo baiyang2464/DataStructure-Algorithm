@@ -34,7 +34,8 @@
     + [0-1背包问题](./Dynamic_Programming.md/#0-1背包问题)
     + [完全背包问题](./Dynamic_Programming.md/#完全背包问题)
     + [多重背包问题](./Dynamic_Programming.md/#多重背包问题)
-  + 03.相关问题
+  + [03.不好惹的子序列问题](./Dynamic_Programming.md/#不好惹的子序列问题)
+  + 04.相关问题
     + [01.不同的二叉树](./different_binary.md)
     + [02.扰乱字符串](./Scrambling_string.md)
     + [03.最大矩形](./max_rectangular.md)
