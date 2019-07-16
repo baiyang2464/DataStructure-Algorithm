@@ -42,6 +42,8 @@
     + [05.不同的子序列](./Dynamic_Programming.md/#不同的子序列)
     + [06.分割回文串II](./Dynamic_Programming.md/#分割回文串II)
     + [07.单词拆分](./Dynamic_Programming.md/#单词拆分)
+    + [08.最大正方形](./Dynamic_Programming.md/#最大正方形)
+    + [09.最长上升子序列](./Dynamic_Programming.md/#最长上升子序列)
   
 + 贪心算法
   

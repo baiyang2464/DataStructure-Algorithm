@@ -533,7 +533,248 @@ public:
 };
 ```
 
+### [地下城游戏](https://leetcode-cn.com/problems/dungeon-game/)
+
+**题目**
+
+一些恶魔抓住了公主（P）并将她关在了地下城的右下角。地下城是由 M x N 个房间组成的二维网格。我们英勇的骑士（K）最初被安置在左上角的房间里，他必须穿过地下城并通过对抗恶魔来拯救公主。
+
+骑士的初始健康点数为一个正整数。如果他的健康点数在某一时刻降至 0 或以下，他会立即死亡。
+
+有些房间由恶魔守卫，因此骑士在进入这些房间时会失去健康点数（若房间里的值为负整数，则表示骑士将损失健康点数）；其他房间要么是空的（房间里的值为 0），要么包含增加骑士健康点数的魔法球（若房间里的值为正整数，则表示骑士将增加健康点数）。
+
+为了尽快到达公主，骑士决定每次只向右或向下移动一步。
+
+**编写一个函数来计算确保骑士能够拯救到公主所需的最低初始健康点数。**
+
+例如，考虑到如下布局的地下城，如果骑士遵循最佳路径 `右 -> 右 -> 下 -> 下`，则骑士的初始健康点数至少为 **7**。
+
+|-2 (K)|-3|	3|
+| ---- | ---- | ---- |
+|-5	|-10	|1|
+|10|	30|	-5 (P)|
 
 
 
+说明:
+
++ 骑士的健康点数没有上限。
+
++ 任何房间都可能对骑士的健康点数造成威胁，也可能增加骑士的健康点数，包括骑士进入的左上角房间以及公主被监禁的右下角房间。
+
+**思路**
+
+这是明显的二维动态规划题目
+
+动态规划是要枚举所有状态，且要找准规模较小的子问题。
+
+这里的原问题是从出发点`(0,0)`到终点`(m,n)`（假设m行，n列）需要多少健康点数，子问题示意图如下：
+
+<p align="center">
+	<img src=./pictures/071401.PNG alt="Sample"  width="600">
+	<p align="center">
+		<em>原问题与子问题</em>
+	</p>
+</p>
+
+**所以可以看出，这个题目的动态规划应该自底向上**
+
+`dp[i][j]`表示从`(i,j)`出发到右下角点需要的健康值，我们只需要取`(i,j)`右和下的最小值（我们需要计算最少的健康值），然后减去`dungoen[i][j]`，并且保证到达当前房间后的血量大于等于`0`就行了
+
+### [最大正方形](https://leetcode-cn.com/problems/maximal-square/)
+
+在一个由 0 和 1 组成的二维矩阵内，找到只包含 1 的最大正方形，并返回其面积。
+
+示例:
+```
+输入: 
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+
+输出: 4
+```
+
+1. 我们用 0 初始化另一个矩阵 dp，维数和原始矩阵维数相同；
+2. `dp(i,j)` 表示的是由 1 组成的最大正方形的边长；
+3. 从 `(0,0)`开始，对原始矩阵中的每一个 1，我们将当前元素的值更新为
+
+`dp(i, j)=min(dp(i−1, j), dp(i−1, j−1), dp(i, j−1))+1`
+
+4. 我们还用一个变量记录当前出现的最大边长，这样遍历一次，找到最大的正方形边长 maxsqlen，那么结果就是 maxsqlen*maxsqlen 。
+
+可以通过下面的图来理解该工作原理（认真的看下图）：
+
+![](https://pic.leetcode-cn.com/28657155fcebc3f210982e889ceef89f6295fb48999222bfe0e52514158c446e-image.png)
+
+(1,3) 处的 2 表示到该索引为止有个边长为 2 的正方形。同样的，(1,2)和 (2,2)处的 2 也表示到该索引为止有边长为 2 的正方形，因此`dp(2,3)=min(dp(1,3),dp(1,2),dp(2,1))+1`，(2,3)处就为3。
+
+到了 (3,3)，原始矩阵中 (3,3) 中的 1，形成了边长为 3 的正方形，所以在 (3,3) 中应该为 3。
+
+现在考虑索引 (3,4) 的情况，到 (3,4)所能形成的最大正方形为 2，所以 (3,4) 应为 2。
+
+算法步骤：
+
+```
+        /*
+            |   dp[i-1][j-1]  |   dp[i-1][j]   |
+            ------------------------------------
+            |   dp[i][j-1]    |   dp[i][j]     |
+            
+            dp[i][j] = min(dp[i-1][j-1],dp[i][j-1],dp[i-1][j])+1;
+        
+            下面加入改进,二维数组变一维数组
+            |   pre   |   dp[j]   |
+            -----------------------
+            | dp[j-1] | new_dp[j] |
+            
+            if matrix[i][j] is '1'
+            then
+                tmp <-- dp[j]
+                dp[j]<--new_dp[j] = min(pre,dp[j],dp[j-1])+1
+                pre <-- tmp;
+            else
+                dp[j] <-- 0
+            j <-- j+1
+        */
+```
+
+代码：
+
+```c++
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        
+        int m = matrix.size(),n = m>0?matrix[0].size():0;
+        vector<int> dp(n+1,0);
+        int pre = 0;
+        int maxLen = 0;
+        for(int i=1;i<=m;++i)
+            for(int j=1;j<=n;++j)
+            {
+                if(matrix[i-1][j-1] =='1')
+                {
+                    int tmp = dp[j];
+                    dp[j] = min(min(pre,dp[j]),dp[j-1])+1;
+                    if(maxLen<dp[j]) maxLen = dp[j];
+                    pre = tmp;
+                }
+                else dp[j] = 0;
+            }
+        return maxLen * maxLen;
+    }
+};
+```
+
+
+
+### [最长上升子序列](https://leetcode-cn.com/problems/longest-increasing-subsequence/)
+
+给定一个无序的整数数组，找到其中最长上升子序列的长度。
+
+示例:
+```
+输入: [10,9,2,5,3,7,101,18]
+输出: 4 
+解释: 最长的上升子序列是 [2,3,7,101]，它的长度是 4。
+```
+
+**说明:**
+
++ 可能会有多种最长上升子序列的组合，**你只需要输出对应的长度即可**。
++ 你算法的时间复杂度应该为 O(*n^2*) 。
++ 你能将算法的时间复杂度降低到 O(*n* log *n*) 吗?
+
+**（一）O(n^2)的动态规划做法**
+
+状态转移方程
+
+`dp[i]`表示数组`nums`中以`nums[i]`结尾的最长上升子序列的长度，则：
+
+`dp[i]=1+max(dp[j] | nums[j]<nums[i]) 0<=j<i`
+
+代码：
+
+```c++
+int lengthOfLIS(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        vector<int> dp(nums.size(),1);
+        int max = 1;
+        for(int i=0;i<nums.size();++i)
+            for(int j=0;j<i;++j)
+            {
+                if(nums[j] <nums[i] && dp[i]<(dp[j]+1))
+                    dp[i] = dp[j] +1;
+                if(dp[i]>max) max = dp[i];
+            }
+        return max;
+}
+```
+
+分析
+
+时间复杂度：O(n^2)，对于每一个`nums[i]`都要遍历`i`之前的所有数字
+
+空间复杂度：O(n)
+
+**（一）O(nlogn)的贪心二分搜索做法**
+
+首先这是一个很巧妙的方法。
+
+*dp* 数组用于存储当前遇到的元素形成的上升子序列，**最后dp数组的长度就是最长子序列的长度。**
+
+**算法：**
+
++ 遍历nums数组,
+  + 如果*nums[i]>dp*数组中最大的数，将其添加到*dp*数组末尾，
+
+  + 否则，使用二分查找法，找到最小的大于*nums[i]*的数，代替之。
+
++ 最后返回dp数组的长度。
+
+**证明：**
+
+*dp[0...end]*表示*nums[0...i]*中元素构成的一个符合题目要求的最长上升子序列
+
+对于元素*nums[i+1]*，若它大于*dp*中任一元素，则将其插入道dp末尾，dp的长度加1，构成更长的上升子序列，否则只替换dp其中大于它的最小元素，dp长度不变，形成新的最长上升子序列。
+
+再看元素*nums[i+1]*，若它大于*nums[0...i]*中任一元素，则`nums[0...i+1`的最长上升子序列应比`nums[0...i]`的最长上升子序列长度大1，否则长度不变。`dp`的改变符合要求。
+
+```c++
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        if(nums.empty()) return 0;
+        vector<int> dp(nums.size(),INT_MIN);
+        int end= -1;
+        int pos;
+        for(int i=0;i<nums.size();++i)
+        {
+            pos = binarySearch(dp,0,end,nums[i]);
+            if(pos>end) ++end;
+            dp[pos] = nums[i];
+        }
+        return end+1;
+    }
+private:
+    int binarySearch(vector<int>&nums,int start,int end,int num)
+    {
+        int mid;
+        while(start<=end)
+        {
+            mid = (start+end)/2;
+            if(num<nums[mid])
+                end = mid-1;
+            else if(num==nums[mid])
+                return mid;
+            else
+                start = mid+1;
+        }
+        return start;
+    }
+};
+```
 
