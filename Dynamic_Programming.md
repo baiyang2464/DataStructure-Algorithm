@@ -92,6 +92,10 @@ int main()
 
 ![](./pictures/mylatex20190624_152228.png)
 
+或者：`f[i][v]=max{f[i-1][v-w[i]]+c[i],f[i-1][v]}`
+
+优化到一维：`f[v] = max(f[v],f[v-w[i])+c[i]);`
+
 ```cpp
 #include<stdio.h>
 #include<algorithm>
@@ -112,6 +116,13 @@ int main()
     printf("%d\n", f[m]);           	// f[m]为最优解
     return 0;
 }
+```
+
+```c++
+注意优化到一维的原理：本层f[i][v]只依赖于上一层的f[i-1][v]
+for(i=1;i<=n;i++)
+	for(v=w[i]; v<=m; v++)  
+		f[v] = max(f[v],f[v-w[i])+c[i]);
 ```
 
 

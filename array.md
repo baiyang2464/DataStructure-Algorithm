@@ -265,7 +265,49 @@ private:
 输出: 6
 ```
 
+**（1）单调栈法**
+
+设置一个栈，存放高度数组的中元素的下标，
++ 遍历`height高度数组`，数组当前下标用`right`表示
+  + 若栈为空或当前高度大于栈顶元素高度，则将当前高度下标入栈
+  + 否则，栈顶下标对应的高度形成一个洼地，可以接雨水，将栈顶元素出栈，设为`low`，
+    + 若栈未空，洼地的左边高度就是原栈中紧挨`low`的第二个元素——现在的栈顶元素，设为`left`，左边高度就是`nums[left]`，洼地右边高度就是`nums[right]`，累加局部面积面积`min(nums[right],nums[left])-nums[low] * (right-left-1)`，然后将`right`入栈
+    + 若栈空，直接将`right`入栈
+
+**代码**
+
+```c++
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        stack<int> s;
+        int right=0;
+        int water = 0;
+        while(right<height.size())
+        {
+            while(!s.empty() && height[right]>height[s.top()]) 
+            {
+                int top = s.top();s.pop();
+                if(!s.empty())
+                {
+                    int left = s.top();
+                    water+=((min(height[left],height[right])-height[top])*(right-left-1));
+                }
+            }
+            s.push(right++);
+        }
+        return water;
+    }
+};
+```
+
 **分析**
+
+时间复杂度：O(n)，遍历一次数组，栈中元素（由于出栈入栈）最多访问两次
+
+空间复杂度：O(n)，栈最多装下所有元素
+
+**（2）双数组法**
 
 每一处水柱的高度取决于该处左右两边实心柱的高度的最小者，最小者减去该处水底的高度，就得到水柱的深度，即该处水的量，若深度为负数代表该处是高地（即两边都比该处矮）需要舍去，最后求和得到总水量。
 
@@ -295,6 +337,57 @@ public:
     }
 };
 ```
+**分析**
+
+时间复杂度：O(n)，遍历两次数组
+
+空间复杂度：O(n)，额外定义了两个数组
+
+**（3）双指针法**
+
+
+
+<p align="center">
+	<img src=./pictures/072001.PNG alt="Sample"  width="500">
+	<p align="center">
+		<em>collect rain water</em>
+	</p>
+</p>
+
+设两个指针`left`与`right`；
+
+再设`maxHeight`表示某个地方至少可以储水的高度，更新`maxHeight`的方法可看上图，接下来的问题是怎么更新`left`与`right`指针：
+
++ 若`height[left]<=height[right]`则`++left`
++ 否则`--right`
++ `cur`则取变化的那个指针，水量累加
+
+```c++
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        if(height.empty()) return 0;
+        int water=0,left =0,right = height.size()-1;
+        int maxHeight = min(height[left],height[right]);
+        int cur;
+        while(left<right)
+        {
+            if(height[left]<=height[right]) 
+                cur= (++left);
+            else cur=(--right);
+            maxHeight = max(maxHeight,min(height[left],height[right]));
+            if(maxHeight>height[cur])
+                water+=(maxHeight-height[cur]);
+        }
+        return water;
+    }
+};
+```
+
+时间复杂度：O(n)，双指针遍历一次数组
+
+空间复杂度：O(1)，显而易见
+
 ## 最小覆盖子串
 
 **题目**
