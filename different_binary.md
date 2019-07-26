@@ -23,17 +23,80 @@
 ```cpp
 class Solution {
 public:
-    int numTrees(int n) {
-        vector<int> dp(n+1,0);
-        dp[0] = 1;//dp[0]要初始化为1，以使dp[0]*dp[n-1]不至为0
-        dp[1] = 1;
-        for(int i=2;i<=n;++i)
-            for(int j=0;j<i;++j)
-            {
-                dp[i]+=dp[j]*dp[i-j-1];
-            }
+    //法四、优化空间的动态规划
+    //可以发现子问题只与规模相关，同等规模时，与子问题的种类无关
+    int numTrees(int n)
+    {
+        if(n<3) return n;
+        vector<int> dp(n+2,0);
+        dp[0] = dp[1] = 1;//dp[0]要初始化为1，以使dp[0]*dp[n-1]不至为0
+        for(int parentNum= 2;parentNum<=n;++parentNum)//树的总规模
+            for(int leftChildNum=0;leftChildNum<parentNum;++leftChildNum)//左子树规模
+                dp[parentNum] += (dp[leftChildNum] * dp[parentNum - 1 - leftChildNum]);
+                //dp[parentNum - 1 - leftChildNum]是右子树规模
         return dp[n];
     }
+    /*
+    //法三、带备忘录的递归====>动态规划算法
+    int numTrees(int n) {
+        vector<vector<int>> memo(n+2,vector<int>(n+1,0));
+        int end;
+        for(int len = 0;len<=n;++len)
+            for(int start=1;start<=n+1-len;++start)
+            {
+                end = start+len-1;
+                if(start>=end)
+                {
+                    memo[start][end] = 1;
+                    continue;
+                }
+                for(int mid=start;mid<=start+len-1;++mid)
+                    memo[start][end] += (memo[start][mid-1]*memo[mid+1][end]);
+            }
+        return memo[1][n];
+    }
+    */
+    
+    /*
+    //法二、带备忘录的递归算法
+    int numTrees(int n) {
+        vector<vector<int>> memo(n+2,vector<int>(n+1,0));
+        return helper(1,n,memo);
+    }
+    int helper(int start,int end,vector<vector<int>>& memo)
+    {
+        if(memo[start][end]) return memo[start][end];
+        if(start>=end) 
+        {
+            memo[start][end] = 1;
+        }
+        else{
+            for(int mid=start;mid<=end;++mid)
+            {
+                memo[start][mid-1] = helper(start,mid-1,memo);
+                memo[mid+1][end] = helper(mid+1,end,memo);
+                memo[start][end] += (memo[start][mid-1]*memo[mid+1][end]);
+            }
+            
+        }
+        return memo[start][end];
+    }
+    */
+    
+    /*
+    //法一、暴力递归算法
+    int numTrees(int n) {
+        return helper(1,n);
+    }
+    int helper(int start,int end)
+    {
+        if(start>=end) return 1;
+        int num =0;
+        for(int mid=start;mid<=end;++mid)
+            num += (helper(start,mid-1)*helper(mid+1,end));
+        return num;
+    }
+    */
 };
 ```
 
