@@ -237,7 +237,7 @@ public:
 };
 ```
 
-## [ 子集](https://leetcode-cn.com/problems/subsets/)
+## [子集](https://leetcode-cn.com/problems/subsets/)
 
 **题目：**
 

@@ -38,6 +38,7 @@ public:
     }
     /*
     //法三、带备忘录的递归====>动态规划算法
+    //把显示的用递归求子问题，换成子问题迭代
     int numTrees(int n) {
         vector<vector<int>> memo(n+2,vector<int>(n+1,0));
         int end;
@@ -65,7 +66,7 @@ public:
     }
     int helper(int start,int end,vector<vector<int>>& memo)
     {
-        if(memo[start][end]) return memo[start][end];
+        if(memo[start][end]) return memo[start][end];//若已经计算过，可以偷懒直接返回
         if(start>=end) 
         {
             memo[start][end] = 1;
