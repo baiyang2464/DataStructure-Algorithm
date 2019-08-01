@@ -602,7 +602,7 @@ class Solution {
 
 + 设置left, right指针在nums数组两端，mid为中点，比较mid与right对应元素大小（若比较mid与left的话，无法对`[1,2,3]`这样的例子做出正确判断）：
   + 当nums[mid] > nums[right]时，一定满足mid < i <= right，因此left = mid + 1；
-  + 当nums[mid] < nums[right]时，一定满足left < i <= mid，因此right = mid；
+  + 当nums[mid] < nums[right]时，一定满足left < i <= mid，要注意nums[mid]仅仅是小于nums[right]，所以nums[mid]也可成为数组中的最小值（不能right=mid-1），因此right = mid；
   + 当nums[mid] == nums[right]时，**是此题对比153题的难点**（原因是此题中数组的元素可重复，相等就难以判断最小值的指针区间）；先说结果：采用right = right - 1(**关键是缩小搜索范围！**)，下面证明：
     + 首先，此操作不会使数组越界，因为right > left > 0；
     + 其次，此操作不会使最小值丢失，证明：假设'nums[right]'是最小值，有两种情况：
