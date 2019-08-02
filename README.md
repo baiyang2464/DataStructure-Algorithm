@@ -65,6 +65,7 @@
     + [03.子集](./backtrack.md/#子集)
     + [04.子集 II](./backtrack.md/#子集-二)
     + [05.单词拆分](./backtrack.md/#单词拆分)
+    + [06.24点游戏](./backtrack.md/#24点游戏)
   
 + 位运算
   + [01.基本概念](./bit_operation.md)

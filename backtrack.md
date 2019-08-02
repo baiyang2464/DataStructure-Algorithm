@@ -369,7 +369,7 @@ public:
 
 
 
-#### [单词拆分](https://leetcode-cn.com/problems/word-break/)
+## [单词拆分](https://leetcode-cn.com/problems/word-break/)
 
 **题目**
 
@@ -437,6 +437,88 @@ public:
         }
         return memo[s]=flag;
     }
+};
+```
+
+## [24点游戏](https://leetcode-cn.com/problems/24-game/)
+
+**题目**
+
+你有 4 张写有 1 到 9 数字的牌。你需要判断是否能通过` *，/，+，-，(，) `的运算得到 24。
+
+示例 1:
+
+```
+输入: [4, 1, 8, 7]
+输出: True
+解释: (8-4) * (7-1) = 24
+```
+
+示例 2:
+
+```
+输入: [1, 2, 1, 2]
+输出: False
+```
+
+注意:
+
+除法运算符 / 表示实数除法，而不是整数除法。例如 4 / (1 - 2/3) = 12 。
+
+**思路**
+
+本题要找出所有情况中的一个就可以了，甚至不用记录具体是哪种情况，一般来说枚举算法就动态规划和回溯法
+
+本题两个元素之间的关系比较复杂，且元素之间可相邻作用也可不相邻，所以用回溯法比较好做一点，另外一个重要原因是数据长度只有4，不会出现时间复杂度较高的情况（否则应思考动态规划解了）
+
+本代码就是先从本次备选数字中选出所有可能的两个数组合进行计算（或+或-或/或*），然后让未参与过运算的数字与本轮的计算结果作为子问题参与下一次计算。枚举了所有情况
+
+```c++
+class Solution {
+public:
+    bool judgePoint24(vector<int>& nums) {
+        //将int容器转化为float容器，防止1/3等于0
+        vector<float> remainNum;
+        for(auto n:nums) remainNum.push_back(n);
+        return helper(remainNum);
+    }
+    
+    bool helper(vector<float> &nums)
+    {
+        int size = nums.size();
+        if(size==0) return false;//数组空，错误
+        else if(size==1) return abs(nums[0]-24)<1e-6;//结果只剩一位，计算结束
+        else
+        {
+            for(int i=0;i<size;++i)
+                for(int j=0;j<size;++j)
+                {
+                    if(i==j) continue;//防止自己和自己运算
+                    vector<float> remainNum;
+                    for(int k=0;k<size;++k)//把不参与本次运算的数先复制出来
+                        if(k!=i && k!=j) remainNum.push_back(nums[k]);
+                    for(int k=0;k<4;++k)
+                    {
+                        if(k<2 && i>j) continue;//+ * 满足交换律，防止(nums[i],nums[j]),或者(nums[j],nums[i])做多次加乘操作
+                        if(k==0)//+
+                            remainNum.push_back(nums[i]+nums[j]);
+                        else if(k==1)//*
+                            remainNum.push_back(nums[i]*nums[j]);
+                        else if(k==2)//-
+                            remainNum.push_back(nums[i]-nums[j]);
+                        else// 除法，要防止除数为0
+                        {
+                            if(nums[j]==0) continue;
+                            remainNum.push_back(nums[i]/nums[j]);
+                        }
+                        if(helper(remainNum)) return true;
+                        remainNum.pop_back();
+                    }
+                }
+            return false;
+        }
+    }
+    
 };
 ```
 
