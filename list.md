@@ -1,4 +1,4 @@
-## 访问链表的一些注意事项
+#### 访问链表的一些注意事项
 
 链表常见的问题有多链表归并，交换链表中的结点，对链表进行排序（一个单链表可用直接插入法，两个单链表可用归并方法）等
 
@@ -6,7 +6,7 @@
 
 操作链表时，若空间允许可以人为增加一个头结点，这样链表的很多操作都统一了，比较方便。
 
-## 如何在单链表中找中间结点
+#### 如何在单链表中找中间结点
 
 使用快慢指针slow，fast，快指针每走两步，慢指针走一步，快指针遍历完整个链表时，慢指针刚好指向链表中间结点。
 
@@ -18,7 +18,7 @@
 
 
 
-## [k个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
+#### [k个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group/)
 
 **题目**
 
@@ -93,7 +93,7 @@
         cout<<"tail="<<tail->val<<endl;
     }
 ```
-## [删除排序链表中的重复元素-II](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/)
+#### [删除排序链表中的重复元素-II](https://leetcode-cn.com/problems/remove-duplicates-from-sorted-list-ii/)
 
 **题目**
 给定一个排序链表，删除所有含有重复数字的节点，只保留原始链表中 没有重复出现 的数字。
@@ -143,7 +143,7 @@ public:
 
 
 
-## 判断单链表是否有环
+#### 判断单链表是否有环
 
 涉及题目：[环形链表](https://leetcode-cn.com/problems/linked-list-cycle)
 
@@ -249,7 +249,7 @@ class Solution {
 
 空间复杂度：O(1)
 
-## [环形链表-II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
+#### [环形链表-II](https://leetcode-cn.com/problems/linked-list-cycle-ii/)
 
 给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
 
@@ -353,7 +353,7 @@ public:
 
 空间复杂度：O(1)
 
-## [排序链表](https://leetcode-cn.com/problems/sort-list/)
+#### [排序链表](https://leetcode-cn.com/problems/sort-list/)
 
 在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序。
 
@@ -453,3 +453,112 @@ public:
 **分析**
 
 时间复杂度：O(nlogn)，递归树深度为logn，递归过程中每层的问题的总规模是n，所以时间复杂度是O(n*logn)
+
+
+
+#### [合并K个排序链表](https://leetcode-cn.com/problems/merge-k-sorted-lists/)
+
+合并 k 个排序链表，返回合并后的排序链表。请分析和描述算法的复杂度。
+
+示例:
+```
+输入:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+输出: 1->1->2->3->4->4->5->6
+```
+
+**思路**
+
+此题暴力做法是对k个排序链表进行K路归并，每次遍历k个链表的头结点，选取最小的插入到归并结果链表的尾结点之后，直至归并完所有结点。
+
+较为高效的做法是：
+
+```c++
+1）以k个排序链表的头结点建立一个小顶堆，为合并结果链表建立一个头结点和尾结点
+2）选区堆顶元素插入到结果链表的尾结点
+	a）若堆顶结点所在链表有下一个结点，则将下一个结点放在堆顶
+	b）否则将堆的最后一个结点放在堆顶，堆的元素个数减一
+	c）对堆顶元素做堆调整，使堆重新符合小顶堆要求
+3）堆空，则归并完毕
+```
+
+**代码**
+
+```c++
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        if(lists.empty()) return NULL;
+        vector<ListNode*> heap;
+        heap.push_back(lists[0]);//占位
+        for(auto node : lists)
+            if(node) heap.push_back(node);
+        //建立一个小根堆
+        int idx = heap.size()/2;//最后一个父节点
+        while(idx>0)
+        {
+            adjustHeap(heap,idx);
+            --idx;
+        }
+        ListNode * head=NULL ,*tail=NULL;
+        //取堆顶元素
+        //然后做堆调整
+        while(heap.size()>1)
+        {
+            if(!head)
+            {
+                head=heap[1];
+                tail = head;
+            }
+            else
+            {
+                tail->next = heap[1];
+                tail = tail->next;
+            }
+            if(tail->next)
+                heap[1] = tail->next;
+            else
+            {
+                heap[1]= heap.back();
+                heap.pop_back();
+            }
+            adjustHeap(heap,1);//插入新结点后要进行堆调整，使其重新满足小顶堆要求
+        }
+        return head;
+    }
+    void adjustHeap(vector<ListNode*> &heap,int idx)
+    {
+        int cur= idx;
+        ListNode * tnode = heap[idx];
+        while(cur<=heap.size()/2)
+        {
+            int minChild= cur*2;
+            if(minChild>=heap.size()) break;
+            if(minChild+1<heap.size() &&heap[minChild]->val> heap[minChild+1]->val) ++minChild;
+            if(tnode->val>heap[minChild]->val)
+            {
+                heap[cur] = heap[minChild];
+                cur = minChild;
+            }
+            else break;
+            cur = minChild;
+        }
+        heap[cur] = tnode;
+    }
+};
+```
+
+
+
