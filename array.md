@@ -640,3 +640,23 @@ public:
 };
 ```
 
+## [洗牌算法-打乱数组](https://leetcode-cn.com/problems/shuffle-an-array/)
+
+洗牌算法的实质就是返回一个定长的扰乱数组，返回的扰乱数组的每个排列的概率是相同的。
+
+下面是讲解经典洗牌算法：
+
+```c++
+vector<int> shuffle(vector<int> &origin) {
+	vector<int> res=origin;
+	for(int i=origin.size()-1;i>=0;--i)
+	{
+		swap(res[i],res[rand()%(i+1)]);
+	}
+	return res;
+}
+```
+
+证明每个排列都是等概率的：
+
+n张不同的牌，共有n!个排列，本算法种res最后一位可能的取值情况有n种，第n-1位有n-1种可能情况，即产生的一个排列的概率为$\frac{1}{n.(n-1)...1}=\frac{1}{n!}$，即每个排列是等概率的

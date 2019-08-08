@@ -154,3 +154,131 @@ int compareVersion(char* version1, char* version2) {
 }
 ```
 
+
+
+#### [单词接龙II](https://leetcode-cn.com/problems/word-ladder-ii/)
+
+给定两个单词（beginWord 和 endWord）和一个字典 wordList，找出所有从 beginWord 到 endWord 的最短转换序列。转换需遵循如下规则：
+
+1. 每次转换只能改变一个字母。
+
+2. 转换过程中的中间单词必须是字典中的单词。
+
+说明:
+
++ 如果不存在这样的转换序列，返回一个空列表。
++ 所有单词具有相同的长度。
++ 所有单词只由小写字母组成。
++ 字典中不存在重复的单词。
++ 你可以假设 beginWord 和 endWord 是非空的，且二者不相同。
+
+示例 1:
+
+```
+输入:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+输出:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+```
+示例 2:
+```
+输入:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+输出: []
+
+解释: endWord "cog" 不在字典中，所以不存在符合要求的转换序列。
+```
+
+**思路**
+
+(1)思路一
+
+此题目时间要求比较严格，且要输出所有最短的路径序列，最开始思路是用DFS一层一层的遍历+单调栈找找最短的路径
+
+单调栈找最短路径：
+
++ 若当前路径长度小于栈顶路径长度，则就一直出栈，
++ 若栈空或者当前路径等于栈顶路径长度，将当前路径进栈
++ 若当前路径大于栈顶路径长度，则丢弃当前路径
+
+但是由于DFS及栈操作，超时了
+
+（2）思路二
+
+查看评论区广度优先搜索的方法，描述比较复杂，可以看代码注释
+
+且比较邪乎的是，下面的代码是我改了几个变量名，就显示运行超时
+
+```python
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        from collections import defaultdict
+        if endWord not in wordList:return []
+        curAdjNodes,anoAdjNodes,wordList,dic={beginWord},{endWord},set(wordList),defaultdict(set)
+        letters,flag = set('abcdefghijklmnopqrstuvwxzy'),True
+        while curAdjNodes:
+            if len(curAdjNodes)>len(anoAdjNodes): 
+                curAdjNodes,anoAdjNods,flag = anoAdjNodes,curAdjNodes,not flag#交换forw,back,取返flag，
+                                                                              #交换广度遍历的方向
+            wordList-=curAdjNodes#将wordList中除掉已经遍历过的单词
+            cur = set()          #cur装此次遍历发现的邻接单词
+            for word in curAdjNodes:
+                for i in range(len(word)):#用a~z的每个字母来替换word中的一个字母，产生一个新单词
+                    for letter in letters:
+                        nextWord = word[0:i] + letter + word[i+1:]
+                        if nextWord in wordList:
+                            cur.add(nextWord)
+                            if flag:dic[nextWord].add(word) #dic存放从前序遍历时，当前邻接单词的前一个单词
+                            else:dic[word].add(nextWord)    #从后序遍历时候，顺序交换下
+            if cur & anoAdjNodes:      #两个set有交集 s1={1,2,3},s2={3,4,5} ,s1 & s2 就为{3}
+                res = [[endWord]]      #若两个set相交时候，表示从前遍历和从后遍历可以组合成一个完整的最短的路径
+                while res[0][0] != beginWord:
+                    res = [[x]+y for y in res for x in dic[y[0]]]
+                return res 
+            curAdjNodes= cur
+        return []
+```
+
+这是可以通过的广度优先遍历的代码（只是和上面代码部分变量名不一样）
+
+```python
+class Solution:
+    def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
+        from collections import defaultdict
+        if endWord not in wordList:return []
+        forward,backward,wordList,dic={beginWord},{endWord},set(wordList),defaultdict(set)
+        letters,flag = set('abcdefghijklmnopqrstuvwxzy'),True
+        while forward:
+            if len(forward)>len(backward): 
+                forward,backward,flag = backward,forward,not flag#交换forw,back,取返flag，交换广度遍历的方向
+            wordList-=forward #将wordList中除掉已经遍历过的单词
+            cur = set()       #cur装此次遍历发现的邻接单词
+            for word in forward:
+                for i in range(len(word)):#用a~z的每个字母来替换word中的一个字母，产生一个新单词
+                    for letter in letters:
+                        nextWord = word[0:i] + letter + word[i+1:]
+                        if nextWord in wordList:
+                            cur.add(nextWord)
+                            if flag:dic[nextWord].add(word) #dic存放从前序遍历时，当前邻接单词的前一个单词
+                            else:dic[word].add(nextWord)    #从后序遍历时候，顺序交换下
+            if cur & backward:      #两个set有交集 s1={1,2,3},s2={3,4,5} ,s1 & s2 就为{3}
+                res = [[endWord]]   #若两个set相交时候，表示从前遍历和从后遍历可以组合成一个完整的最短的路径
+                while res[0][0] != beginWord:
+                    res = [[x]+y for y in res for x in dic[y[0]]]
+                return res 
+            forward = cur
+        return []
+```
+
+
+
+
