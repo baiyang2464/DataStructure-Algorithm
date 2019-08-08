@@ -218,6 +218,8 @@ wordList = ["hot","dot","dog","lot","log"]
 
 且比较邪乎的是，下面的代码是我改了几个变量名，就显示运行超时
 
+大体思路是：从左右两边同时开工进行层次遍历（也可只从一编遍历），找`起始结点`和`末端结点`的`邻接结点`，记录遍历过的结点，下一次只在没有遍历过的结点中找邻接结点，当两个搜索域相交时候就表示找到了可从起始结点到邻接结点的路径，由于是层次遍历，所以可以保证第一次相遇时，可以凑成最短路径。
+
 ```python
 class Solution:
     def findLadders(self, beginWord: str, endWord: str, wordList: List[str]) -> List[List[str]]:
@@ -229,8 +231,8 @@ class Solution:
             if len(curAdjNodes)>len(anoAdjNodes): 
                 curAdjNodes,anoAdjNods,flag = anoAdjNodes,curAdjNodes,not flag#交换forw,back,取返flag，
                                                                               #交换广度遍历的方向
-            wordList-=curAdjNodes#将wordList中除掉已经遍历过的单词
-            cur = set()          #cur装此次遍历发现的邻接单词
+            wordList-=curAdjNodes	#将wordList中除掉已经遍历过的单词
+            cur = set()          	#cur装此次遍历发现的邻接单词
             for word in curAdjNodes:
                 for i in range(len(word)):#用a~z的每个字母来替换word中的一个字母，产生一个新单词
                     for letter in letters:
