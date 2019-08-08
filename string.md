@@ -229,12 +229,12 @@ class Solution:
         letters,flag = set('abcdefghijklmnopqrstuvwxzy'),True
         while curAdjNodes:
             if len(curAdjNodes)>len(anoAdjNodes): 
-                curAdjNodes,anoAdjNods,flag = anoAdjNodes,curAdjNodes,not flag#交换forw,back,取返flag，
-                                                                              #交换广度遍历的方向
-            wordList-=curAdjNodes	#将wordList中除掉已经遍历过的单词
-            cur = set()          	#cur装此次遍历发现的邻接单词
+                curAdjNodes,anoAdjNods,flag = anoAdjNodes,curAdjNodes,not flag #交换forw,back,取返flag，
+                                                                               #交换广度遍历的方向
+            wordList-=curAdjNodes		   #将wordList中除掉已经遍历过的单词
+            cur = set()          		   #cur装此次遍历发现的邻接单词
             for word in curAdjNodes:
-                for i in range(len(word)):#用a~z的每个字母来替换word中的一个字母，产生一个新单词
+                for i in range(len(word)): #用a~z的每个字母来替换word中的一个字母，产生一个新单词
                     for letter in letters:
                         nextWord = word[0:i] + letter + word[i+1:]
                         if nextWord in wordList:
@@ -261,11 +261,11 @@ class Solution:
         letters,flag = set('abcdefghijklmnopqrstuvwxzy'),True
         while forward:
             if len(forward)>len(backward): 
-                forward,backward,flag = backward,forward,not flag#交换forw,back,取返flag，交换广度遍历的方向
-            wordList-=forward #将wordList中除掉已经遍历过的单词
-            cur = set()       #cur装此次遍历发现的邻接单词
+                forward,backward,flag = backward,forward,not flag #交换forw,back,取返flag，交换广度遍历的方向
+            wordList-=forward 				#将wordList中除掉已经遍历过的单词
+            cur = set()      				#cur装此次遍历发现的邻接单词
             for word in forward:
-                for i in range(len(word)):#用a~z的每个字母来替换word中的一个字母，产生一个新单词
+                for i in range(len(word)):  #用a~z的每个字母来替换word中的一个字母，产生一个新单词
                     for letter in letters:
                         nextWord = word[0:i] + letter + word[i+1:]
                         if nextWord in wordList:
