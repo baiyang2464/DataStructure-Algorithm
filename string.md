@@ -353,7 +353,7 @@ str[::-1]
 
 （一）类似KMP算法的方法
 
-**[算法](<https://leetcode-cn.com/problems/shortest-palindrome/solution/zui-duan-hui-wen-chuan-by-leetcode/>)**
+**[参考解法](<https://leetcode-cn.com/problems/shortest-palindrome/solution/zui-duan-hui-wen-chuan-by-leetcode/>)**
 
 + 利用 KMP 算法的部分匹配表声场算法——找末端回文子串从字符串开始的最长前缀。
 + 创建新字符 s = s + "#" + reverse(s)，并使用该字符串进行部分匹配表生成。
@@ -371,7 +371,7 @@ public:
         reverse(sr.begin(),sr.end());
         s = s +"#"+ sr;            
         n = s.length();
-        /*prefixLen[i]保存s[i]处，可与从s头部开始形成的最长前缀的长度*/
+        /*prefixLen[i]保存s[i]处，可与从s头部开始匹配形成的最长前缀的长度*/
         vector<int> prefixLen(n,0);
                                    
         for(int i=1;i<n;++i)
