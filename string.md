@@ -283,4 +283,112 @@ class Solution:
 
 
 
+#### [翻转字符串里的单词](https://leetcode-cn.com/problems/reverse-words-in-a-string/)
 
+给定一个字符串，逐个翻转字符串中的每个单词。
+
+示例 1：
+```
+输入: "the sky is blue"
+输出: "blue is sky the"
+```
+示例 2：
+```
+输入: "  hello world!  "
+输出: "world! hello"
+解释: 输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+```
+示例 3：
+```
+输入: "a good   example"
+输出: "example good a"
+解释: 如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。
+```
+
+这道题很简单，
+
+**python方法——熟悉一些操作**
+
+```python
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        return " ".join(s.split()[::-1])
+```
+
+join()方法语法：
+
+```python
+str.join(sequence)
+```
+
++ sequence -- 要连接的元素序列。
++ 返回通过指定字符连接序列中元素后生成的新字符串。
+
+字符串翻转方法
+
+```python
+str[::-1]
+```
+
+**c语言方法**
+
+要找到每个单词，将单词翻转，然后再将整个字符串翻转一次（当然还有空格符要处理）就得到结果
+
+
+
+#### [最短回文串](https://leetcode-cn.com/problems/shortest-palindrome/)
+
+给定一个字符串 s，你可以通过在字符串前面添加字符将其转换为回文串。找到并返回可以用这种方式转换的最短回文串。
+
+示例 1:
+```
+输入: "aacecaaa"
+输出: "aaacecaaa"
+```
+示例 2:
+```
+输入: "abcd"
+输出: "dcbabcd"
+```
+
+（一）类似KMP算法的方法
+
+**[算法](<https://leetcode-cn.com/problems/shortest-palindrome/solution/zui-duan-hui-wen-chuan-by-leetcode/>)**
+
++ 利用 KMP 算法的部分匹配表声场算法——找末端回文子串从字符串开始的最长前缀。
++ 创建新字符 s = s + "#" + reverse(s)，并使用该字符串进行部分匹配表生成。
+  + 中间的 "#" 是必要的。如果没有#，两个字符串可能会发生混淆，造成错误的答案。举例而言，字符串 “aaaa”。如果不在中间插入 "#"，新字符串会是 “aaaaaaaa“， 最长前缀大小会成为 7，这显然是错的。因此，中间的分隔符是必要的。
+
++ 返回最大回文子串后的子串的反转（长度为 n-f[n_new-1]）+ 原字符串 s
+
+```c++
+class Solution {
+public:
+    string shortestPalindrome(string s) {
+        int n = s.length();
+        string so= s;
+        string sr =s;
+        reverse(sr.begin(),sr.end());
+        s = s +"#"+ sr;            
+        n = s.length();
+        /*prefixLen[i]保存s[i]处，可与从s头部开始形成的最长前缀的长度*/
+        vector<int> prefixLen(n,0);
+                                   
+        for(int i=1;i<n;++i)
+        {
+            int k = prefixLen[i-1];//当前位置的前缀长度，可从前一个位置的前缀长度基础上产生
+            /*长度k转为下标时，刚好是与当前位置比较的位置*/
+            while(k>0 && s[k]!=s[i])//若k长的前缀不匹配，则缩短前缀长度再来匹配
+                k = prefixLen[k-1];
+            if(s[k]==s[i])
+                ++k;//长度和下标转换要加1
+            prefixLen[i]=k;
+        }
+        return sr.substr(0,sr.length()-prefixLen[n-1]) + so;
+    }
+};
+```
+
+（二）找首端最长回文子串的方法
+
+[最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)
