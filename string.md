@@ -334,7 +334,169 @@ str[::-1]
 
 要找到每个单词，将单词翻转，然后再将整个字符串翻转一次（当然还有空格符要处理）就得到结果
 
+#### [最长回文子串](https://leetcode-cn.com/problems/longest-palindromic-substring/)
 
+给定一个字符串 s，找到 s 中最长的回文子串。你可以假设 s 的最大长度为 1000。
+
+示例 1：
+```
+输入: "babad"
+输出: "bab"
+注意: "aba" 也是一个有效答案。
+```
+示例 2：
+```
+输入: "cbbd"
+输出: "bb"
+```
+
+**（一）最长公共子串动态规划算法方法**
+
+<p align="center">
+	<img src=./pictures/081004.png alt="Sample"  width="800">
+	<p align="center">
+		<em> </em>
+	</p>
+</p>
+[参考：动态规划经典例题——最长公共子序列和最长公共子串](<https://blog.csdn.net/ggdhs/article/details/90713154>)
+
+
+```c++
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.length();
+        if(n==0) return s;
+        string sr = s;
+        reverse(sr.begin(),sr.end());
+        vector<int> dp(n,0);
+        int maxLen = 0,start=0;
+        int last=0,next;
+        for(int i=0;i<n;++i)
+        {
+            last=0;
+            for(int j=0;j<n;++j)
+            {
+                next = dp[j];
+                if(sr[j]==s[i])
+                {
+                    dp[j] = last+1;
+                    if(maxLen<=dp[j] && n-j-1==i-dp[j]+1)//检查子串索引与反向串索引
+                    {
+                        maxLen = dp[j];
+                        start = j-maxLen+1;
+                    }
+                }
+                else dp[j] = 0;
+                last = next;
+            }
+        }
+        return sr.substr(start,maxLen);
+    }
+};
+```
+
+<p align="center">
+	<img src=./pictures/081003.png alt="Sample"  width="550">
+	<p align="center">
+		<em> </em>
+	</p>
+</p>
+
+**（二）另一种动态规划算法**
+
+`f[i][j]`记录子串`s[i,...j]`是否是回文串
+状态转移公式：`f[i][j] = f[i+1][j-1] and s[i]==s[j] `
+
+这产生了一个直观的动态规划解法，我们首先初始化一字母和二字母的回文，然后找到所有三字母回文，并依此类推…
+
+```c++
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        //动态规划算法 f[i][j]记录s[i,...j]是否是回文串
+        //f[i][j] = f[i+1][j-1] && s[i]==s[j] 
+        //则需要找到分别找到长度为1，为2，为3...的回文串,记录出现最长的子串及起始位置
+        if(s=="") return s;
+        int n =s.length();
+        vector<vector<int>> f(n,vector<int>(n,1));
+        int maxLen = 1;
+        int start= 0;
+        for( int len =2;len<=n;++len)
+            for(int j=len-1;j<n;++j)
+            {
+                int i = j-len+1;
+                if(s[i]==s[j] && (len==2 || f[i+1][j-1]))
+                {
+                    if(maxLen < j-i+1) 
+                    {
+                        maxLen = j-i+1;
+                        start= i;
+                    }
+                }
+                else f[i][j] = 0;
+            }
+        return s.substr(start,maxLen);
+    }
+};
+```
+
+复杂度分析
+
+时间复杂度：O(n^2)，两个for循环，这里给出我们的运行时间复杂度为 O(n^2)
+
+空间复杂度：O(n^2)，该方法使用 O(n^2) 的空间来存储表。
+
+**（三）中心扩展法**
+
+事实上，只需使用恒定的空间，我们就可以在 O(n^2)的时间内解决这个问题。
+
+我们观察到回文中心的两侧互为镜像。因此，回文可以从它的中心展开，并且只有 2n - 1个这样的中心。
+
+为什么会是 2n - 1个，而不是 n 个中心？原因在于所含字母数为偶数的回文的中心可以处于两字母之间（例如 “abba”的中心在两个‘bb’ 之间）。
+
+```c++
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int left = 0, right = 0;
+        int len = 0;
+        for (int i = 0; i < s.length(); ++i) {
+            int len1 = expandAroundCenter(s,i,i);
+            int len2 = expandAroundCenter(s,i,i+1);
+            len = max(len1,len2);
+            if(len>right-left+1)
+            {
+                right = i + len/2;
+                left = i -(len-1)/2;
+            }
+        }
+        return s.substr(left, right - left + 1);
+    }
+    
+    int expandAroundCenter(const string &s,int i,int j)
+    {
+        while(i>=0 && j< s.length() && s[i]==s[j])
+        {
+            --i;++j;
+        }
+        return j-i-1;
+    }
+};
+```
+
+复杂度分析
+
+时间复杂度：`O(n^2)`，最坏情况下（和动态规划的`O(n^2)`的差别）运行时间复杂度为 O(n^2)
+
+空间复杂度：O(1)
+
+<p align="center">
+	<img src=./pictures/081002.png alt="Sample"  width="550">
+	<p align="center">
+		<em>时空复杂度</em>
+	</p>
+</p>
 
 #### [最短回文串](https://leetcode-cn.com/problems/shortest-palindrome/)
 
