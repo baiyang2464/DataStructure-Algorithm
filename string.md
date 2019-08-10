@@ -353,12 +353,13 @@ str[::-1]
 **（一）最长公共子串动态规划算法方法**
 
 <p align="center">
-	<img src=./pictures/081004.png alt="Sample"  width="800">
+	<img src=./pictures/081004.png alt="Sample"  width="850">
 	<p align="center">
 		<em> </em>
 	</p>
 </p>
-[参考：动态规划经典例题——最长公共子序列和最长公共子串](<https://blog.csdn.net/ggdhs/article/details/90713154>)
+
+[参考——最长公共子序列和最长公共子串](<https://blog.csdn.net/ggdhs/article/details/90713154>)
 
 
 ```c++
