@@ -666,3 +666,101 @@ private:
 
 
 
+#### [二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/)
+
+序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。
+
+请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+示例: 
+
+你可以将以下二叉树：
+```
+    1
+   / \
+  2   3
+     / \
+    4   5
+```
+序列化为 "[1,2,3,null,null,4,5]"
+提示: 这与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。
+
+说明: 不要使用类的成员 / 全局 / 静态变量来存储状态，你的序列化和反序列化算法应该是无状态的。
+
+**思路**
+
+使用深度优先遍历的策略来完成树的序列化与反序列化
+
+一般来说无法从一种DFS遍历序列来唯一的生成一棵树，此处我们利用了树中为利用的空指针来辅助反序列化，达到只需要一次遍历就能序列化与反序列化
+
+我们使用先序遍历的策略
+
+**序列化**
+
+先序遍历二叉树，一边访问结点的值一边输出遍历序列到字符串，每个结点的值转成字符串后以","号隔开，遇到空结点，则在遍历数列中输出"NULL"字符串。最后输出**序列res**
+
+**反序列化**
+
+模仿先序遍历的过程，遍历上面的**序列res**以逗号分割之后的列表
+
+比如res="1,2,3,4,5,NULL,NULL,6,7"
+
+按照先序遍历的策略，序列中第一个有效值作为根，序列中下一个有效值优先作为本结点的左子树根结点的值，直到在序列中遇到“NULL”，则为当前子树构建空结点，然后返回父节点，构建父节点的右子树，直至遍历完序列res。最后输出一棵二叉树
+
+<p align="center">
+	<img src=./pictures/083001.png alt="Sample"  width="550">
+	<p align="center">
+		<em>序列化与反序列化</em>
+	</p>
+</p>
+
+**代码**
+
+```python
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Codec:
+    def dfs_serialize(self,root):
+        if root is None:
+            return 'null'
+        res = str(root.val)+','
+        res += self.dfs_serialize(root.left) +','
+        res += self.dfs_serialize(root.right)
+        return res
+    
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        :type root: TreeNode
+        :rtype: str
+        """
+        res = self.dfs_serialize(root)
+        return res
+
+    def dfs_deserialize(self,nodes):   
+        if nodes[0] == 'null':
+            nodes.pop(0)
+            return None
+        node = TreeNode(nodes[0])
+        nodes.pop(0)
+        node.left = self.dfs_deserialize(nodes)
+        node.right= self.dfs_deserialize(nodes)
+        return node
+        
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        :type data: str
+        :rtype: TreeNode
+        """
+        nodes = data.split(',')
+        return self.dfs_deserialize(nodes)
+
+# Your Codec object will be instantiated and called as such:
+# codec = Codec()
+# codec.deserialize(codec.serialize(root))
+```
+
