@@ -347,8 +347,8 @@ public:
         vector<vector<int>> res;
         if(!nums.size()) return res;
         vector<int> path;
-        res.push_back(path);//让相同的元素聚集在一起
-        sort(nums.begin(),nums.end());
+        res.push_back(path);
+        sort(nums.begin(),nums.end());//让相同的元素聚集在一起
         dfs(res,nums,path,0);
         return res;
     }

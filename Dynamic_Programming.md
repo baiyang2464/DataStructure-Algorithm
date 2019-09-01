@@ -733,7 +733,39 @@ int lengthOfLIS(vector<int>& nums) {
 
 空间复杂度：O(n)
 
-**（一）O(nlogn)的贪心二分搜索做法**
+**（二）单调栈解法**
+
+```c++
+class Solution {
+public:
+    int lengthOfLIS(vector<int>& nums) {
+        int len = nums.size();
+        vector<int> vec;//vec是一个单调栈，把比栈顶元素大的元素，加入的栈中，成为新栈顶
+        if(len>0)vec.push_back(nums[0]);
+        for(int i =1;i<nums.size();i++)
+        {
+            if(nums[i]>vec.back())//加入比栈顶元素大的元素
+                vec.push_back(nums[i]);
+            else//若遇到小于等于栈顶元素的值nums[i]
+            {
+                for(int j =0;j<vec.size();j++)
+                {
+                    if(vec[j]>=nums[i])//替换一个比nums[i]大且栈中最小的元素，单调栈性质不会发生改变
+                    {
+                        vec[j] = nums[i];
+                        break;
+                    }
+                }
+            }
+        }
+        return vec.size();
+    }
+};
+```
+
+方法三就是将在单调中的查找换成二分查找
+
+**（三）O(nlogn)的贪心二分搜索做法**
 
 首先这是一个很巧妙的方法。
 
