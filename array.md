@@ -661,7 +661,7 @@ vector<int> shuffle(vector<int> &origin) {
 
 n张不同的牌，共有n!个排列，本算法种res最后一位可能的取值情况有n种，第n-1位有n-1种可能情况，即产生的一个排列的概率为$\frac{1}{n.(n-1)...1}=\frac{1}{n!}$，即每个排列是等概率的
 
-## [找最小谷最大峰算法——买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)
+## [买卖股票的最佳时机](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)
 
 给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
 
