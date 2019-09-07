@@ -905,3 +905,178 @@ public:
 };
 ```
 
+
+
+### [动态规划治疗各种买股票的奇技淫巧](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/)
+
+给定一个数组，它的第 i 个元素是一支给定股票第 i 天的价格。
+
+如果你最多只允许完成一笔交易（即买入和卖出一支股票），设计一个算法来计算你所能获取的最大利润。
+
+注意你不能在买入股票前卖出股票。
+
+示例 1:
+```
+输入: [7,1,5,3,6,4]
+输出: 5
+解释: 在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格。
+```
+示例 2:
+```
+输入: [7,6,4,3,1]
+输出: 0
+解释: 在这种情况下, 没有交易完成, 所以最大利润为 0。
+```
+
+
+
+题目是求最佳时机，意味着要遍历完所有的状态（除非是贪心算法）
+
+因此可以有回溯法或者动态规划算法，此处介绍动态规划算法，治疗各种买股票问题
+
+[详细解析请看这里](<https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/solution/yi-ge-fang-fa-tuan-mie-6-dao-gu-piao-wen-ti-by-l-3/>)
+
+```c++
+dp[i][j][k] 第i天交易j次后当天持有(k=1)或不持有(k=0)股票时，当前的最大利润
+//状态的转移
+dp[i][j][0] = max(dp[i-1][j][0]            ,dp[i-1][j][1]+prices[i]);
+dp[i][j][1] = max(dp[i-1][j-1][0]-prices[i],dp[i-1][j][0]);
+//初始化
+dp[i][0][0] = 0; //没有发生任何交易
+dp[0][j][0] = -finit; //第0天不可能交易
+dp[0][j][1] = -finit; //第0天不可能交易，也不可能持有股票
+dp[i][0][1] = -finit; //没有发生交易却持有股票，也不可能
+
+```
+
+**(1)只允许一次交易**
+
+针对本问题解法
+
+```c++
+0 <= j <= 1
+当j只能=0或者1时,由于dp[i][0][.]=0,所以只剩下dp[i][1][.],用二维来表示,
+dp[i][0] = max(dp[i-1][0]    ,dp[i-1][1]+prices[i]);
+dp[i][1] = max(0-prices[i]   ,dp[i-1][0]);
+由于i天只利用第i-1天的信息，所以二维可以优化成一维
+```
+
+
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int dp_0 = 0;
+        int dp_1 = INT_MIN;
+        for(int i=0;i<prices.size();++i)
+        {
+            dp_0 = max(dp_0,dp_1+prices[i]);
+            dp_1 = max(-prices[i],dp_1);
+        }
+        return dp_0;
+    }
+};
+```
+
+**(2)不限制交易次数**
+
+[买卖股票的最佳时机 II](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-ii) 
+
+此时交易次数不是限制交易获取利润的状态，因此将交易次数这个状态从dp公式中移除
+
+```c++
+dp[i][k] 第i天当天持有(k=1)或不持有(k=0)股票时，当前的最大利润
+//状态的转移
+dp[i][0] = max(dp[i-1][0]          ,dp[i-1][1]+prices[i]);
+dp[i][1] = max(dp[i-1][0]-prices[i],dp[i-1][1]);
+//初始化
+dp[i][0] = 0; //没有发生任何交易
+dp[i][1] = -finit; //没有发生交易却持有股票，也不可能
+```
+
+发现当天之和前一天有关，可以将二维变成一维
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int dp_0 = 0;
+        int dp_1 = INT_MIN;
+        for(int i = 0;i<prices.size();++i)
+        {
+            int tmp = dp_0;
+            dp_0 = max(dp_0,dp_1+prices[i]);
+            dp_1 = max(tmp-prices[i],dp_1);
+        }
+        return dp_0;
+    }
+};
+```
+
+**（3）有限次交易**
+
+[买卖股票的最佳时机 III](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii)
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int n = prices.size();
+        int J = 2;
+        vector<vector<vector<int>>> dp(n+1,vector<vector<int>>(J+1,vector<int>(2,0)));
+        for(int i=0;i<=n;++i)
+            for(int j=0;j<=J;++j)
+            {
+                if(i==0 && j>=0)
+                    dp[i][j][1] = INT_MIN+prices[i];
+                if(i==0 && j>0)
+                    dp[i][j][0] = 0;
+            }
+        for(int i=1;i<=n;++i)
+            for(int j=1;j<=J;++j)
+            {
+                dp[i][j][0] = max(dp[i-1][j][0],dp[i-1][j][1]+prices[i-1]);
+                dp[i][j][1] = max(dp[i-1][j-1][0]-prices[i-1],dp[i-1][j][1]);
+            }
+        return dp[n][J][0];
+    }
+};
+```
+
+**（4）交易含冷冻期**
+
+[最佳买卖股票时机含冷冻期](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
+
+```
+dp[i][k] 第i天当天持有(k=1)或不持有(k=0)股票时，当前的最大利润
+//状态的转移
+dp[i][0] = max(dp[i-1][0]          ,dp[i-1][1]+prices[i]);
+dp[i][1] = max(dp[i-2][0]-prices[i],dp[i-1][1]);
+//初始化
+dp[i][0] = 0; //没有发生任何交易
+dp[i][1] = -finit; //没有发生交易却持有股票，也不可能
+```
+
+可以如此建模
+
+```c++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int dp_0 = 0;
+        int dp_1 = INT_MIN;
+        int two_days_ago = 0;
+        for(int i = 0;i<prices.size();++i)
+        {
+            int tmp = dp_0;
+            dp_0 = max(dp_0,dp_1+prices[i]);
+            dp_1 = max(two_days_ago -prices[i],dp_1);
+            two_days_ago = tmp;
+        }
+        return dp_0;
+    }
+};
+```
+
