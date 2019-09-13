@@ -72,10 +72,12 @@
 + 位运算
   + [01.基本概念](./bit_operation.md)
   + 02.相关问题
-    + [01.确定毒酒](./bit_operation.md/#确定毒酒)
-    + [02.格雷编码](./bit_operation.md/#格雷编码)
-    + [03.只出现一次的数字](./bit_operation.md/#只出现一次的数字)
-    + [04.只出现一次的数字-II](./bit_operation.md/#只出现一次的数字-II)
+    + [01.确定毒酒](./bit_operation_math.md/#确定毒酒)
+    + [02.格雷编码](./bit_operation_math.md/#格雷编码)
+    + [03.只出现一次的数字](./bit_operation_math.md/#只出现一次的数字)
+    + [04.只出现一次的数字-II](./bit_operation_math.md/#只出现一次的数字-II)
+    + [05.开方函数](./bit_operation_math.md/#开方函数)
+    + [06.直线上最多的点数](./bit_operation_math.md/#直线上最多的点数)
   
 + 数组
   + [01.常见的排序算法](./array.md/#数组)
@@ -106,7 +108,8 @@
   + 02.相关问题
     + [01.最长连续序列](./hash.md/#最长连续序列)
     + [02.LRU缓存管理机制](./hash.md/#LRU缓存机制)
-
+  + [03.直线上最多的点数](./bit_operation_math.md/#直线上最多的点数)
+  
 + string
   + [0.1比较版本号](./string.md/#比较版本号)
   + [0.2单词接龙II](./string.md/#单词接龙II)

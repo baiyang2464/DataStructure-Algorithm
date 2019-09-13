@@ -288,4 +288,114 @@ class Solution:
 
 
 
+## 开方函数
+
+若系统不提供开方函数`sqrt`，请写一个浮点数的开方函数，`e`是要求的误差范围
+
+输入：
+
+```
+一个浮点数：x
+误差范围：e
+```
+
+输出：x的平方根，要求精度在正确值得正负e之内
+
+思路：
+
+使用牛顿迭代法
+
+```c++
+float mySqrt(float x,float e)
+{
+	float cur = x/2.0;
+	float last = x;
+	while(abs(last-cur)>e)
+	{
+		float tmp = (cur +x/cur)/2.0
+		last = cur;
+		cur = tmp;
+	}
+	return cur;
+}
+```
+
+## [直线上最多的点数](https://leetcode-cn.com/problems/max-points-on-a-line/)
+
+给定一个二维平面，平面上有 n 个点，求最多有多少个点在同一条直线上。
+
+注意相同坐标值得点可能出现多次，它们算作不同的点。
+
+示例 1:
+
+```
+输入: [[1,1],[2,2],[3,3]]
+输出: 3
+解释:
+^
+|
+|        o
+|     o
+|  o  
++------------->
+0  1  2  3  4
+```
+示例 2:
+```
+输入: [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+输出: 4
+解释:
+^
+|
+|  o
+|     o        o
+|        o
+|  o        o
++------------------->
+0  1  2  3  4  5  6
+```
+
+思路：
+
+涉及到如何表示点，如何唯一的确定一条直线，如何表示点和直线的关系
+
+一个方法是，若找到确定一条直线的标志，用一个字典的key存储标志，唯一的标识一条直线，然后values存储在这条直线上的点数目
+
+表示一条直线的方法：
+
+```
+1.点斜式
+以一个点为端点，从该点出发，计算其与其它点的斜率，就可以表示出经过该点的所有直线，其它点在直线上出现的次数也可统计出来
+
+2.一般式
+y=kx+b，记录点对之间形成的k和b值，来标识一条直线
+```
+
+下面使用点斜式的思路来解这道题
+
+```python
+class Solution:
+    def maxPoints(self, points: List[List[int]]) -> int:
+        dict1 = {} # 记录点重复出现的次数
+        for point in points:
+            dict1[(point[0],point[1])] = dict1.get((point[0],point[1]),0)+1
+        keys = list(dict1.keys()) # 换成list，方便j从i+1起步   
+        res = 0
+        if len(keys) >=1:
+            res = dict1[keys[0]]
+        for i,(x,y) in enumerate(keys):    
+            # 每个点都作为一个标定点，去计算它与其他点的斜率 
+            # 同时应知道，一个点加一个斜率（点斜式），就可以确定平面的一条直线
+            dict2 = {} # 存储其它点在某条直线上出现的次数
+            for j in range(i+1,len(keys)): 
+                _x,_y = keys[j][0],keys[j][1]
+                k = 'inf' 
+                if x!=_x: # 若斜率不为无限大
+                    k = (_y-y)*10 / (_x-x) #放大处理,增大精度,为了跑通最后一组数据
+                dict2[k]  = dict2.get(k,0) + dict1[keys[j]]  
+            if dict2:
+                res = max(res,dict1[keys[i]]+max(dict2.values()))    
+                # 从一个点出发可以找到它所在的直线上的所有点，用res记录已经出现的直线上的最多的点数
+        return res      
+```
 
